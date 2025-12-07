@@ -69,5 +69,45 @@ export const LEARN_CONTENT: LearnPage[] = [
         mascotDialogue: "It's like a sandwich filling! The main clause is the bread on either side.",
         exampleSentence: "The cake that my mum baked was delicious.",
         highlightedText: "that my mum baked"
+    },
+
+    // --- Subordinating Conjunctions ---
+    {
+        id: 'learn-conj-1',
+        type: ClauseType.CONJUNCTION,
+        title: 'What is a Subordinating Conjunction?',
+        definition: 'A subordinating conjunction is a word that starts a subordinate clause. It joins the subordinate clause to the main clause.',
+        mascotDialogue: "Common ones include: because, if, although, since, until, and while.",
+        exampleSentence: "I put on my coat because it was cold.",
+        highlightedText: "because"
+    },
+    {
+        id: 'learn-conj-2',
+        type: ClauseType.CONJUNCTION,
+        title: 'Starting Sentences',
+        definition: 'Can you start a sentence with a conjunction? Yes! If the subordinate clause comes first, the conjunction leads the way.',
+        mascotDialogue: "Don't forget the comma after the subordinate clause!",
+        exampleSentence: "Although it was raining, we played football.",
+        highlightedText: "Although"
+    },
+
+    // --- Relative Pronouns ---
+    {
+        id: 'learn-pro-1',
+        type: ClauseType.PRONOUN,
+        title: 'What is a Relative Pronoun?',
+        definition: 'A relative pronoun is the word that starts a relative clause. It points back to the noun being described.',
+        mascotDialogue: "The most common ones are: who, which, that, whose, and where.",
+        exampleSentence: "The teacher who helped me is very kind.",
+        highlightedText: "who"
+    },
+    {
+        id: 'learn-pro-2',
+        type: ClauseType.PRONOUN,
+        title: 'Which Pronoun to Use?',
+        definition: "Use 'who' for people, 'which' for things, and 'where' for places. 'That' can be used for people or things!",
+        mascotDialogue: "Pay attention to whether you are talking about a person or an object.",
+        exampleSentence: "This is the book which I borrowed.",
+        highlightedText: "which"
     }
 ];

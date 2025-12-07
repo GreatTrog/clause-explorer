@@ -1,5 +1,6 @@
 import React from 'react';
 import type { LearnPage } from '../../data/curriculum';
+import { getClauseDisplayName } from '../../types';
 
 interface LearnCardProps {
   page: LearnPage;
@@ -23,7 +24,7 @@ export const LearnCard: React.FC<LearnCardProps> = ({ page }) => {
   return (
     <div className="learn-card">
       <div className="card-header">
-        <span className="badge">{page.type} CLAUSE</span>
+        <span className={`badge ${page.type.toLowerCase()}`}>{getClauseDisplayName(page.type)}</span>
         <h2>{page.title}</h2>
       </div>
 
@@ -71,6 +72,12 @@ export const LearnCard: React.FC<LearnCardProps> = ({ page }) => {
           text-transform: uppercase;
           letter-spacing: 1px;
         }
+
+        .badge.main { background: var(--color-main-clause); }
+        .badge.subordinate { background: var(--color-sub-clause); }
+        .badge.relative { background: var(--color-rel-clause); }
+        .badge.conjunction { background: var(--color-conjunction); }
+        .badge.pronoun { background: var(--color-pronoun); }
 
         .card-header h2 {
           font-size: 2.5rem;
