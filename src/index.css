@@ -1,0 +1,104 @@
+:root {
+  /* Vibrant Palette for Kids */
+  --color-primary: #4F46E5;
+  /* Indigo */
+  --color-primary-light: #818CF8;
+  --color-secondary: #F59E0B;
+  /* Amber/Orange */
+  --color-accent: #10B981;
+  /* Emerald Green */
+  --color-danger: #EF4444;
+  /* Red */
+
+  --color-background: #F3F4F6;
+  /* Light Grey/Cloud */
+  --color-surface: #FFFFFF;
+  --color-text-main: #1F2937;
+  --color-text-muted: #6B7280;
+
+  /* Clause Specific Colors */
+  --color-main-clause: #3B82F6;
+  /* Blue */
+  --color-sub-clause: #EC4899;
+  /* Pink */
+  --color-rel-clause: #8B5CF6;
+  /* Purple */
+  --color-conjunction: #EC4899;
+  /* Pink (reusing or slightly different?) Let's use differnt. Pink is sub. */
+  --color-conjunction: #D946EF;
+  /* Fuchsia */
+  --color-pronoun: #06B6D4;
+  /* Cyan */
+  --color-highlight: #FDE047;
+  /* Yellow */
+
+  /* UI Tokens */
+  --radius-sm: 8px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --radius-full: 9999px;
+
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+  --shadow-pop: 0 8px 0px 0 rgb(0 0 0 / 0.15);
+  /* For "pressable" buttons */
+
+  --font-family-base: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-family-heading: 'Outfit', sans-serif;
+  /* Friendly heading font, need to import */
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-family-base);
+  background-color: var(--color-background);
+  color: var(--color-text-main);
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  font-family: inherit;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-family-heading);
+  margin-top: 0;
+}
+
+/* Utilities */
+.container {
+  max-width: 1024px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+.card {
+  background: var(--color-surface);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  padding: 1.5rem;
+}
+
+.btn-primary {
+  background-color: var(--color-primary);
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: var(--radius-full);
+  font-weight: bold;
+  font-size: 1.1rem;
+  transition: transform 0.1s;
+  box-shadow: var(--shadow-pop);
+  transform: translateY(-4px);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+  box-shadow: none;
+}
