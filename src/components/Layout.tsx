@@ -2,35 +2,35 @@ import React from 'react';
 import { AppMode } from '../types';
 
 interface LayoutProps {
-    children: React.ReactNode;
-    currentMode: AppMode;
-    onNavigate: (mode: AppMode) => void;
+  children: React.ReactNode;
+  currentMode: AppMode;
+  onNavigate: (mode: AppMode) => void;
 }
 
 export const Layout: React.FC<LayoutProps> = ({ children, currentMode, onNavigate }) => {
-    return (
-        <div className="layout-container">
-            <header className="app-header">
-                <button
-                    className="home-button"
-                    onClick={() => onNavigate(AppMode.HOME)}
-                    aria-label="Go Home"
-                >
-                    <span style={{ fontSize: '1.5rem' }}>🏠</span> Clause Explorer
-                </button>
+  return (
+    <div className="layout-container">
+      <header className="app-header">
+        <button
+          className="home-button"
+          onClick={() => onNavigate(AppMode.HOME)}
+          aria-label="Go Home"
+        >
+          <span style={{ fontSize: '1.5rem' }}>🏠</span> Grammar Explorer
+        </button>
 
-                {currentMode !== AppMode.HOME && (
-                    <div className="mode-indicator">
-                        Current Mode: <strong>{currentMode}</strong>
-                    </div>
-                )}
-            </header>
+        {currentMode !== AppMode.HOME && (
+          <div className="mode-indicator">
+            Current Mode: <strong>{currentMode}</strong>
+          </div>
+        )}
+      </header>
 
-            <main className="app-main">
-                {children}
-            </main>
+      <main className="app-main">
+        {children}
+      </main>
 
-            <style>{`
+      <style>{`
         .layout-container {
           display: flex;
           flex-direction: column;
@@ -71,6 +71,6 @@ export const Layout: React.FC<LayoutProps> = ({ children, currentMode, onNavigat
           box-sizing: border-box;
         }
       `}</style>
-        </div>
-    );
+    </div>
+  );
 };

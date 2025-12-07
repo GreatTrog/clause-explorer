@@ -2,46 +2,46 @@ import React from 'react';
 import { AppMode } from '../../types';
 
 interface ModeSelectionProps {
-    onSelectMode: (mode: AppMode) => void;
+  onSelectMode: (mode: AppMode) => void;
 }
 
 export const ModeSelection: React.FC<ModeSelectionProps> = ({ onSelectMode }) => {
-    return (
-        <div className="home-screen">
-            <div className="hero">
-                <h1>Welcome to Clause Explorer!</h1>
-                <p className="subtitle">Master your grammar with the wise Owl!</p>
-                {/* Placeholder for Owl Image */}
-                <div className="mascot-placeholder">🦉</div>
-            </div>
+  return (
+    <div className="home-screen">
+      <div className="hero">
+        <h1>Welcome to Grammar Explorer!</h1>
+        <p className="subtitle">Master your grammar with the wise Owl!</p>
+        {/* Placeholder for Owl Image */}
+        <div className="mascot-placeholder">🦉</div>
+      </div>
 
-            <div className="mode-grid">
-                <button
-                    className="mode-card learn"
-                    onClick={() => onSelectMode(AppMode.LEARN)}
-                >
-                    <h2>🎓 Learn</h2>
-                    <p>Discover Main, Subordinate, and Relative clauses.</p>
-                </button>
+      <div className="mode-grid">
+        <button
+          className="mode-card learn"
+          onClick={() => onSelectMode(AppMode.LEARN)}
+        >
+          <h2>🎓 Learn</h2>
+          <p>Discover Main, Subordinate, and Relative clauses.</p>
+        </button>
 
-                <button
-                    className="mode-card practice"
-                    onClick={() => onSelectMode(AppMode.PRACTICE)}
-                >
-                    <h2>🎯 Practice</h2>
-                    <p>Test your skills on specific clause types.</p>
-                </button>
+        <button
+          className="mode-card practice"
+          onClick={() => onSelectMode(AppMode.PRACTICE)}
+        >
+          <h2>🎯 Practice</h2>
+          <p>Test your skills on specific clause types.</p>
+        </button>
 
-                <button
-                    className="mode-card mastery"
-                    onClick={() => onSelectMode(AppMode.MASTERY)}
-                >
-                    <h2>🏆 Mastery</h2>
-                    <p>Prove you're a grammar wizard!</p>
-                </button>
-            </div>
+        <button
+          className="mode-card mastery"
+          onClick={() => onSelectMode(AppMode.MASTERY)}
+        >
+          <h2>🏆 Mastery</h2>
+          <p>Prove you're a grammar wizard!</p>
+        </button>
+      </div>
 
-            <style>{`
+      <style>{`
         .home-screen {
           text-align: center;
           padding: 2rem 0;
@@ -112,6 +112,6 @@ export const ModeSelection: React.FC<ModeSelectionProps> = ({ onSelectMode }) =>
           50% { transform: translateY(-10px); }
         }
       `}</style>
-        </div>
-    );
+    </div>
+  );
 };

@@ -7,6 +7,13 @@ export const AppMode = {
 
 export type AppMode = typeof AppMode[keyof typeof AppMode];
 
+export const GrammarModule = {
+    CLAUSES: 'CLAUSES',
+    TENSES: 'TENSES',
+} as const;
+
+export type GrammarModule = typeof GrammarModule[keyof typeof GrammarModule];
+
 export const ClauseType = {
     MAIN: 'MAIN',
     SUBORDINATE: 'SUBORDINATE',

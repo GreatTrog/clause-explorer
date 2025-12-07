@@ -6,12 +6,35 @@ import { TableClassifier } from './TableClassifier';
 import { SentenceHighlighter } from '../practice/SentenceHighlighter';
 import { FeedbackOverlay } from '../practice/FeedbackOverlay';
 import { useGameState } from '../../context/GameStateContext';
+import { ModuleSelector } from '../../components/ModuleSelector';
+import { GrammarModule } from '../../types';
 
 export const MasteryContainer: React.FC = () => {
+    const [selectedModule, setSelectedModule] = useState<GrammarModule | null>(null);
     const [currentIndex, setCurrentIndex] = useState(0);
     const [feedback, setFeedback] = useState<{ isCorrect: boolean; message: string } | null>(null);
     const { updateMasteryScore, incrementStreak, resetStreak } = useGameState();
 
+    if (!selectedModule) {
+        return (
+            <div className="mastery-container">
+                <ModuleSelector onSelect={setSelectedModule} />
+            </div>
+        );
+    }
+
+    if (selectedModule === GrammarModule.TENSES) {
+        return (
+            <div className="container" style={{ textAlign: 'center', marginTop: '4rem' }}>
+                <button className="back-link" onClick={() => setSelectedModule(null)} style={{ float: 'left' }}>← modules</button>
+                <br /><br />
+                <h2>🚧 Tenses Mastery Coming Soon! 🚧</h2>
+                <p>We are building this right now.</p>
+            </div>
+        );
+    }
+
+    // CLause Mastery Logic
     const questions = MASTERY_QUESTIONS;
     const currentQuestion = questions[currentIndex];
     const isFinished = currentIndex >= questions.length;
@@ -56,7 +79,8 @@ export const MasteryContainer: React.FC = () => {
 
     return (
         <div className="mastery-container">
-            <div className="header-info">
+            <div className="header-info" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <button className="back-link" onClick={() => setSelectedModule(null)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--color-primary)', textDecoration: 'underline' }}>← modules</button>
                 <span className="question-counter">Challenge {currentIndex + 1}</span>
             </div>
 

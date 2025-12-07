@@ -4,10 +4,14 @@ import type { Chunk } from '../../data/practiceQuestions';
 import { SentenceHighlighter } from './SentenceHighlighter';
 import { FeedbackOverlay } from './FeedbackOverlay';
 import { useGameState } from '../../context/GameStateContext';
-import { ClauseType } from '../../types';
+import { ClauseType, GrammarModule } from '../../types';
+import { ModuleSelector } from '../../components/ModuleSelector';
 
 export const PracticeContainer: React.FC = () => {
-    // State for sub-menu selection
+    // State for Module Selection
+    const [selectedModule, setSelectedModule] = useState<GrammarModule | null>(null);
+
+    // State for sub-menu selection (for Clauses)
     // null = showing menu
     const [selectedCategory, setSelectedCategory] = useState<ClauseType | null>(null);
 
@@ -18,6 +22,27 @@ export const PracticeContainer: React.FC = () => {
     const [feedback, setFeedback] = useState<{ isCorrect: boolean; message: string } | null>(null);
 
     const { updatePracticeScore, incrementStreak, resetStreak } = useGameState();
+
+    if (!selectedModule) {
+        return (
+            <div className="practice-container">
+                <ModuleSelector onSelect={setSelectedModule} />
+            </div>
+        )
+    }
+
+    if (selectedModule === GrammarModule.TENSES) {
+        return (
+            <div className="container" style={{ textAlign: 'center', marginTop: '4rem' }}>
+                <button className="back-link" onClick={() => setSelectedModule(null)} style={{ float: 'left' }}>← modules</button>
+                <br /><br />
+                <h2>🚧 Tenses Practice Coming Soon! 🚧</h2>
+                <p>We are building this right now.</p>
+            </div>
+        );
+    }
+
+    // --- Clauses Logic ---
 
     // Filter questions based on selection
     // If selectedCategory is null, this array is empty but we won't render the game loop anyway

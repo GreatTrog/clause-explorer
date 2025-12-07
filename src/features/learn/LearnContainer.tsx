@@ -2,20 +2,45 @@ import React, { useState } from 'react';
 import { LEARN_CONTENT } from '../../data/curriculum';
 import { LearnCard } from './LearnCard';
 import { useGameState } from '../../context/GameStateContext';
+import { ModuleSelector } from '../../components/ModuleSelector';
+import { GrammarModule } from '../../types';
 
 interface LearnContainerProps {
   onComplete: () => void;
 }
 
 export const LearnContainer: React.FC<LearnContainerProps> = ({ onComplete }) => {
+  const [selectedModule, setSelectedModule] = useState<GrammarModule | null>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
   const { markLearnCompleted } = useGameState();
 
-  const currentPage = LEARN_CONTENT[currentIndex];
-  // Calculate progress for the bar (0 to 100)
-  const progressPercent = ((currentIndex + 1) / LEARN_CONTENT.length) * 100;
+  if (!selectedModule) {
+    return (
+      <div className="learn-container">
+        <ModuleSelector onSelect={setSelectedModule} />
+      </div>
+    );
+  }
 
-  const isLastPage = currentIndex === LEARN_CONTENT.length - 1;
+  // TODO: Add different content for TENSES when available
+  // For now, if TENSES is selected, we could show a "Coming Soon" or just the clauses again for testing
+  const content = selectedModule === GrammarModule.CLAUSES ? LEARN_CONTENT : []; // Placeholder empty for Tenses
+
+  if (content.length === 0) {
+    return (
+      <div className="container" style={{ textAlign: 'center', marginTop: '4rem' }}>
+        <h2>🚧 Tenses Module Coming Soon! 🚧</h2>
+        <p>We are building this right now.</p>
+        <button className="btn-primary" onClick={() => setSelectedModule(null)}>Choose Another Topic</button>
+      </div>
+    );
+  }
+
+  const currentPage = content[currentIndex];
+  // Calculate progress for the bar (0 to 100)
+  const progressPercent = ((currentIndex + 1) / content.length) * 100;
+
+  const isLastPage = currentIndex === content.length - 1;
   const isFirstPage = currentIndex === 0;
 
   const handleNext = () => {
@@ -23,7 +48,7 @@ export const LearnContainer: React.FC<LearnContainerProps> = ({ onComplete }) =>
       setCurrentIndex(prev => prev + 1);
     } else {
       markLearnCompleted();
-      onComplete();
+      onComplete(); // Note: This might exit the whole Learn mode back to Home
     }
   };
 
@@ -33,8 +58,17 @@ export const LearnContainer: React.FC<LearnContainerProps> = ({ onComplete }) =>
     }
   };
 
+  const handleBackToModules = () => {
+    setSelectedModule(null);
+    setCurrentIndex(0);
+  };
+
   return (
     <div className="learn-container">
+      <div className="header-nav" style={{ marginBottom: '1rem' }}>
+        <button className="back-link" onClick={handleBackToModules}>← modules</button>
+      </div>
+
       <div className="progress-bar-container">
         <div className="progress-bar">
           <div
@@ -42,7 +76,7 @@ export const LearnContainer: React.FC<LearnContainerProps> = ({ onComplete }) =>
             style={{ width: `${progressPercent}%` }}
           />
         </div>
-        <span className="progress-text">{currentIndex + 1} / {LEARN_CONTENT.length}</span>
+        <span className="progress-text">{currentIndex + 1} / {content.length}</span>
       </div>
 
       <LearnCard page={currentPage} />
