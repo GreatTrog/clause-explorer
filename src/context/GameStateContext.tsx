@@ -1,11 +1,12 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { ClauseType, TenseType } from '../types';
+import { ClauseType, TenseType, VoiceType } from '../types';
 import type { UserProgress } from '../types';
 
 interface GameStateContextType {
     progress: UserProgress;
     updatePracticeScore: (type: ClauseType, score: number) => void;
     updateTenseScore: (type: TenseType, score: number) => void;
+    updateVoiceScore: (type: VoiceType, score: number) => void;
     updateMasteryScore: (score: number) => void;
     incrementStreak: () => void;
     resetStreak: () => void;
@@ -31,6 +32,10 @@ const INITIAL_PROGRESS: UserProgress = {
         [TenseType.PRESENT_PERFECT]: 0,
         [TenseType.MODAL]: 0,
     },
+    voiceScores: {
+        [VoiceType.ACTIVE]: 0,
+        [VoiceType.PASSIVE]: 0,
+    },
     masteryScore: 0,
     streak: 0,
 };
@@ -42,11 +47,18 @@ export const GameStateProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         const saved = localStorage.getItem('clause-explorer-progress');
         // Handle migration if needed by merging with INITIAL_PROGRESS
         const parsed = saved ? JSON.parse(saved) : INITIAL_PROGRESS;
-        // Simple migration check: if tenseScores is missing, add it
-        if (!parsed.tenseScores) {
-            return { ...parsed, tenseScores: INITIAL_PROGRESS.tenseScores };
+
+        let migrated = { ...parsed };
+
+        // Migration checks
+        if (!migrated.tenseScores) {
+            migrated.tenseScores = INITIAL_PROGRESS.tenseScores;
         }
-        return parsed;
+        if (!migrated.voiceScores) {
+            migrated.voiceScores = INITIAL_PROGRESS.voiceScores;
+        }
+
+        return migrated;
     });
 
     useEffect(() => {
@@ -69,6 +81,16 @@ export const GameStateProvider: React.FC<{ children: React.ReactNode }> = ({ chi
             tenseScores: {
                 ...prev.tenseScores,
                 [type]: Math.max(prev.tenseScores[type], score)
+            }
+        }));
+    };
+
+    const updateVoiceScore = (type: VoiceType, score: number) => {
+        setProgress(prev => ({
+            ...prev,
+            voiceScores: {
+                ...prev.voiceScores,
+                [type]: Math.max(prev.voiceScores[type], score)
             }
         }));
     };
@@ -97,6 +119,7 @@ export const GameStateProvider: React.FC<{ children: React.ReactNode }> = ({ chi
             progress,
             updatePracticeScore,
             updateTenseScore,
+            updateVoiceScore,
             updateMasteryScore,
             incrementStreak,
             resetStreak,

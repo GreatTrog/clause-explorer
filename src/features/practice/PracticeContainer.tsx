@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { PRACTICE_QUESTIONS } from '../../data/practiceQuestions';
 import { TENSES_PRACTICE_QUESTIONS } from '../../data/tensesPractice';
+import { VOICE_PRACTICE_QUESTIONS } from '../../data/voicePractice';
 import type { Chunk } from '../../data/practiceQuestions';
 import { SentenceHighlighter } from './SentenceHighlighter';
 import { FeedbackOverlay } from './FeedbackOverlay';
 import { useGameState } from '../../context/GameStateContext';
-import { ClauseType, GrammarModule, TenseType } from '../../types';
+import { ClauseType, GrammarModule, TenseType, VoiceType } from '../../types';
 import { ModuleSelector } from '../../components/ModuleSelector';
 import { MultipleChoiceQuestion } from '../../components/MultipleChoiceQuestion';
 
@@ -16,6 +17,7 @@ export const PracticeContainer: React.FC = () => {
     // State for sub-menu selection
     const [selectedCategory, setSelectedCategory] = useState<ClauseType | null>(null); // For Clauses
     const [selectedTense, setSelectedTense] = useState<TenseType | null>(null);       // For Tenses
+    const [selectedVoice, setSelectedVoice] = useState<VoiceType | null>(null);       // For Voice
 
     // Game state
     const [currentIndex, setCurrentIndex] = useState(0);
@@ -24,13 +26,14 @@ export const PracticeContainer: React.FC = () => {
     const [isAnswered, setIsAnswered] = useState(false);
     const [feedback, setFeedback] = useState<{ isCorrect: boolean; message: string } | null>(null);
 
-    const { updatePracticeScore, updateTenseScore, incrementStreak, resetStreak } = useGameState();
+    const { updatePracticeScore, updateTenseScore, updateVoiceScore, incrementStreak, resetStreak } = useGameState();
 
     // Reset everything when leaving module
     const handleBackToModules = () => {
         setSelectedModule(null);
         setSelectedCategory(null);
         setSelectedTense(null);
+        setSelectedVoice(null); // Reset voice
         setCurrentIndex(0);
         setFeedback(null);
         setSelectedChunk(null);
@@ -41,6 +44,7 @@ export const PracticeContainer: React.FC = () => {
     const resetSelection = () => {
         setSelectedCategory(null);
         setSelectedTense(null);
+        setSelectedVoice(null); // Reset voice
         setCurrentIndex(0);
         setFeedback(null);
         setSelectedChunk(null);
@@ -56,16 +60,6 @@ export const PracticeContainer: React.FC = () => {
         )
     }
 
-    // --- Data Source Logic ---
-    let questions: any[] = [];
-    if (selectedModule === GrammarModule.CLAUSES && selectedCategory) {
-        questions = PRACTICE_QUESTIONS.filter(q => q.type === selectedCategory);
-    } else if (selectedModule === GrammarModule.TENSES && selectedTense) {
-        questions = TENSES_PRACTICE_QUESTIONS.filter(q => q.type === selectedTense);
-    }
-
-    const currentQuestion = questions[currentIndex];
-    const isFinished = currentIndex >= questions.length && questions.length > 0;
 
     // --- CSS Styles ---
     const PRACTICE_STYLES = `
@@ -176,7 +170,41 @@ export const PracticeContainer: React.FC = () => {
         }
     `;
 
-    // --- Sub-menu Views ---
+    // ...
+
+
+
+    // --- Data Source Logic ---
+    let questions: any[] = [];
+    if (selectedModule === GrammarModule.CLAUSES && selectedCategory) {
+        questions = PRACTICE_QUESTIONS.filter(q => q.type === selectedCategory);
+    } else if (selectedModule === GrammarModule.TENSES && selectedTense) {
+        questions = TENSES_PRACTICE_QUESTIONS.filter(q => q.type === selectedTense);
+    } else if (selectedModule === GrammarModule.VOICE && selectedVoice) {
+        questions = VOICE_PRACTICE_QUESTIONS.filter(q => q.type === selectedVoice);
+    }
+
+    const currentQuestion = questions[currentIndex];
+
+    // If we have selected filters but no questions found
+    if (questions.length === 0 && (
+        (selectedModule === GrammarModule.CLAUSES && selectedCategory) ||
+        (selectedModule === GrammarModule.TENSES && selectedTense) ||
+        (selectedModule === GrammarModule.VOICE && selectedVoice)
+    )) {
+        return (
+            <div className="container" style={{ textAlign: 'center', marginTop: '4rem' }}>
+                <h2>No Questions Found 🤷</h2>
+                <p>This category doesn't have any practice questions yet.</p>
+                <button className="btn-primary" onClick={resetSelection}>Choose Another Topic</button>
+                <style>{PRACTICE_STYLES}</style>
+            </div>
+        );
+    }
+
+    const isFinished = currentIndex >= questions.length;
+
+
 
     // CLAUSES MENU
     if (selectedModule === GrammarModule.CLAUSES && !selectedCategory) {
@@ -270,6 +298,29 @@ export const PracticeContainer: React.FC = () => {
         );
     }
 
+    // VOICE MENU
+    if (selectedModule === GrammarModule.VOICE && !selectedVoice) {
+        return (
+            <div className="practice-menu">
+                <button className="back-link" onClick={handleBackToModules} style={{ alignSelf: 'flex-start' }}>← modules</button>
+                <h2>Choose Voice to Practice</h2>
+                <div className="category-grid">
+                    <button className="cat-btn main" onClick={() => setSelectedVoice(VoiceType.ACTIVE)}>
+                        <div className="icon">📢</div>
+                        <h3>Active Voice</h3>
+                        <p>Subject does the action!</p>
+                    </button>
+                    <button className="cat-btn sub" onClick={() => setSelectedVoice(VoiceType.PASSIVE)}>
+                        <div className="icon">🕵️</div>
+                        <h3>Passive Voice</h3>
+                        <p>Action happens to subject!</p>
+                    </button>
+                </div>
+                <style>{PRACTICE_STYLES}</style>
+            </div>
+        );
+    }
+
 
     // --- Game Logic functions ---
 
@@ -283,6 +334,9 @@ export const PracticeContainer: React.FC = () => {
             incrementStreak();
             if (selectedCategory) updatePracticeScore(selectedCategory, 10);
             if (selectedTense) updateTenseScore(selectedTense, 10);
+            if (selectedVoice) {
+                updateVoiceScore(selectedVoice, 10);
+            }
             setFeedback({ isCorrect: true, message: "Correct! Well done." });
         } else {
             resetStreak();
@@ -305,6 +359,10 @@ export const PracticeContainer: React.FC = () => {
         if (isCorrect) {
             incrementStreak();
             if (selectedTense) updateTenseScore(selectedTense, 10);
+            if (selectedVoice) {
+                // We likely already have updateVoiceScore from destructured hook, but let's be safe
+                updateVoiceScore(selectedVoice, 10);
+            }
             setFeedback({ isCorrect: true, message: "Correct!" });
         } else {
             resetStreak();
@@ -352,6 +410,9 @@ export const PracticeContainer: React.FC = () => {
     const isHighlight = currentQuestion && ('chunks' in currentQuestion);
     const isMC = currentQuestion && ('options' in currentQuestion);
 
+    // Safety check
+    if (!currentQuestion) return null;
+
     return (
         <div className="practice-container">
             <div className="header-info">
@@ -363,7 +424,7 @@ export const PracticeContainer: React.FC = () => {
             {/* Instruction Logic depends on type */}
             <div className="instruction-card">
                 <h2>
-                    {isHighlight ? currentQuestion.instructions : currentQuestion.question}
+                    {currentQuestion.instructions || currentQuestion.text || currentQuestion.question}
                 </h2>
                 <div className="mascot-helper">🦉</div>
             </div>

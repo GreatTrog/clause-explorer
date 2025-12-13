@@ -1,4 +1,4 @@
-import { ClauseType } from '../types';
+import { ClauseType, TenseType, VoiceType } from '../types';
 
 export interface Chunk {
     id: string;
@@ -8,10 +8,14 @@ export interface Chunk {
 
 export interface PracticeQuestion {
     id: string;
-    type: ClauseType;
-    instructions: string;
+    type: ClauseType | TenseType | VoiceType;
+    instructions?: string; // Optional because sometime we use question text
+    text?: string; // Some questions use text instead of instructions
     hint: string;
-    chunks: Chunk[];
+    chunks?: Chunk[]; // Optional for Highlight questions
+    options?: { id: string; text: string; isCorrect: boolean }[]; // Optional for MC questions
+    explanation?: string; // Explanation for answer
+    question?: string; // Text for MC questions
 }
 
 // Helper to generate chunks where one is correct

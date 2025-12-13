@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { LEARN_CONTENT } from '../../data/curriculum';
 import { TENSES_CONTENT } from '../../data/tensesCurriculum';
+import { VOICE_CURRICULUM } from '../../data/voiceCurriculum';
 import { LearnCard } from './LearnCard';
 import { useGameState } from '../../context/GameStateContext';
 import { ModuleSelector } from '../../components/ModuleSelector';
@@ -23,7 +24,12 @@ export const LearnContainer: React.FC<LearnContainerProps> = ({ onComplete }) =>
     );
   }
 
-  const content = selectedModule === GrammarModule.CLAUSES ? LEARN_CONTENT : TENSES_CONTENT;
+  let content = LEARN_CONTENT;
+  if (selectedModule === GrammarModule.TENSES) {
+    content = TENSES_CONTENT;
+  } else if (selectedModule === GrammarModule.VOICE) {
+    content = VOICE_CURRICULUM;
+  }
 
   if (content.length === 0) {
     return (

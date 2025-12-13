@@ -1,6 +1,7 @@
 import React from 'react';
 import type { LearnPage } from '../../data/curriculum';
 import { getClauseDisplayName } from '../../types';
+import { MarkdownText } from '../../components/MarkdownText';
 
 interface LearnCardProps {
   page: LearnPage;
@@ -30,13 +31,15 @@ export const LearnCard: React.FC<LearnCardProps> = ({ page }) => {
 
       <div className="content-grid">
         <div className="definition-section">
-          <p className="definition">{page.definition}</p>
+          <p className="definition">
+            <MarkdownText text={page.definition} />
+          </p>
         </div>
 
         <div className="mascot-section">
           <div className="mascot-avatar">🦉</div>
           <div className="speech-bubble">
-            {page.mascotDialogue}
+            <MarkdownText text={page.mascotDialogue} />
           </div>
         </div>
 

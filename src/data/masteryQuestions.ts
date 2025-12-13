@@ -1,4 +1,4 @@
-import { ClauseType, TenseType } from '../types';
+import { ClauseType, TenseType, VoiceType } from '../types';
 
 export const MasteryQuestionType = {
     SELECT: 'SELECT',
@@ -11,7 +11,7 @@ export const MasteryQuestionType = {
 export type MasteryQuestionType = typeof MasteryQuestionType[keyof typeof MasteryQuestionType];
 
 // Union type for any grammar category used in sorting/classification
-export type GrammarCategory = ClauseType | TenseType;
+export type GrammarCategory = ClauseType | TenseType | VoiceType;
 
 export interface SelectQuestion {
     type: typeof MasteryQuestionType.SELECT;

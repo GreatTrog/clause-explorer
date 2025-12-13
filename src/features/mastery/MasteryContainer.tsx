@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { MASTERY_QUESTIONS, MasteryQuestionType } from '../../data/masteryQuestions';
 import type { MasteryQuestion } from '../../data/masteryQuestions';
 import { TENSES_MASTERY_QUESTIONS } from '../../data/tensesMastery';
+import { VOICE_MASTERY_QUESTIONS } from '../../data/voiceMastery';
 import { DragDropZone } from './DragDropZone';
 import { SentenceCompleter } from './SentenceCompleter';
 import { TableClassifier } from './TableClassifier';
@@ -37,6 +38,9 @@ export const MasteryContainer: React.FC = () => {
             setCurrentIndex(0);
         } else if (selectedModule === GrammarModule.TENSES) {
             setQuestions(shuffleArray(TENSES_MASTERY_QUESTIONS));
+            setCurrentIndex(0);
+        } else if (selectedModule === GrammarModule.VOICE) {
+            setQuestions(shuffleArray(VOICE_MASTERY_QUESTIONS));
             setCurrentIndex(0);
         }
     }, [selectedModule]);

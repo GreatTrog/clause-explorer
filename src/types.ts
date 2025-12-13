@@ -10,6 +10,7 @@ export type AppMode = typeof AppMode[keyof typeof AppMode];
 export const GrammarModule = {
     CLAUSES: 'CLAUSES',
     TENSES: 'TENSES',
+    VOICE: 'VOICE',
 } as const;
 
 export type GrammarModule = typeof GrammarModule[keyof typeof GrammarModule];
@@ -37,15 +38,23 @@ export const TenseType = {
 
 export type TenseType = typeof TenseType[keyof typeof TenseType];
 
+export const VoiceType = {
+    ACTIVE: 'ACTIVE',
+    PASSIVE: 'PASSIVE',
+} as const;
+
+export type VoiceType = typeof VoiceType[keyof typeof VoiceType];
+
 export interface UserProgress {
     learnCompleted: boolean;
     practiceScores: Record<ClauseType, number>;
     tenseScores: Record<TenseType, number>;
+    voiceScores: Record<VoiceType, number>;
     masteryScore: number;
     streak: number;
 }
 
-export const getClauseDisplayName = (type: ClauseType | TenseType): string => {
+export const getClauseDisplayName = (type: ClauseType | TenseType | VoiceType): string => {
     switch (type) {
         // Clauses
         case ClauseType.MAIN: return 'Main Clause';
@@ -63,6 +72,10 @@ export const getClauseDisplayName = (type: ClauseType | TenseType): string => {
         case TenseType.PAST_PERFECT: return 'Past Perfect';
         case TenseType.PRESENT_PERFECT: return 'Present Perfect';
         case TenseType.MODAL: return 'Modal Verb';
+
+        // Voice
+        case VoiceType.ACTIVE: return 'Active Voice';
+        case VoiceType.PASSIVE: return 'Passive Voice';
 
         default: return (type as string).replace(/_/g, ' '); // Fallback for tenses mostly works
     }

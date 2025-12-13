@@ -27,6 +27,15 @@ export const ModuleSelector: React.FC<ModuleSelectorProps> = ({ onSelect }) => {
                     <h3>Tenses</h3>
                     <p>Past, Present, and Future!</p>
                 </button>
+
+                <button
+                    className="module-card voice"
+                    onClick={() => onSelect(GrammarModule.VOICE)}
+                >
+                    <div className="icon">📢</div>
+                    <h3>Active & Passive</h3>
+                    <p>Who is doing the action?</p>
+                </button>
             </div>
 
             <style>{`
@@ -84,6 +93,7 @@ export const ModuleSelector: React.FC<ModuleSelectorProps> = ({ onSelect }) => {
                 /* Module specific highlights */
                 .module-card.clauses:hover { border-bottom: 4px solid var(--color-primary); }
                 .module-card.tenses:hover { border-bottom: 4px solid var(--color-secondary); }
+                .module-card.voice:hover { border-bottom: 4px solid #EC4899; }
             `}</style>
         </div>
     );
