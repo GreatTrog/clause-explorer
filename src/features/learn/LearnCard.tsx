@@ -10,15 +10,47 @@ interface LearnCardProps {
 export const LearnCard: React.FC<LearnCardProps> = ({ page }) => {
   // Helper to highlight the specific text within the sentence
   const renderExample = () => {
-    const parts = page.exampleSentence.split(page.highlightedText);
-    if (parts.length < 2) return <p className="example-text">{page.exampleSentence}</p>;
+    const highlights = Array.isArray(page.highlightedText)
+      ? page.highlightedText
+      : [page.highlightedText];
+
+    // 1. Clean the cleanSentence by removing ** wrappers around any of the highlighted words
+    // This ensures we can split strictly on the words themselves
+    let cleanSentence = page.exampleSentence;
+    highlights.forEach(highlight => {
+      const escaped = highlight.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      const regex = new RegExp(`\\*\\*${escaped}\\*\\*`, 'g');
+      cleanSentence = cleanSentence.replace(regex, highlight);
+    });
+
+    if (highlights.length === 0 || (highlights.length === 1 && !highlights[0])) {
+      return <div className="example-text"><MarkdownText text={page.exampleSentence} /></div>;
+    }
+
+    // 2. Create a combined regex to split by any of the highlights
+    // We use a capturing group () so that split includes the separators in the result array
+    const joinedPattern = highlights
+      .map(h => h.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'))
+      .join('|');
+    const splitRegex = new RegExp(`(${joinedPattern})`, 'g');
+
+    const parts = cleanSentence.split(splitRegex);
 
     return (
-      <p className="example-text">
-        {parts[0]}
-        <span className="highlighted">{page.highlightedText}</span>
-        {parts[1]}
-      </p>
+      <div className="example-text">
+        {parts.map((part, index) => {
+          // Check if this part matches one of our highlights
+          const isHighlight = highlights.includes(part);
+          if (isHighlight) {
+            return (
+              <span key={index} className="highlighted">
+                <MarkdownText text={part} />
+              </span>
+            );
+          }
+          return <MarkdownText key={index} text={part} />;
+        })}
+      </div>
     );
   };
 
@@ -149,6 +181,16 @@ export const LearnCard: React.FC<LearnCardProps> = ({ page }) => {
           font-weight: bold;
           color: black;
           box-shadow: 0 2px 0 rgba(0,0,0,0.1);
+        }
+
+        /* Ensure paragraphs inside highlighted span don't break layout */
+        .highlighted p {
+            margin: 0;
+            display: inline;
+        }
+        .example-text p {
+            margin: 0;
+            display: inline;
         }
 
         @keyframes slideIn {

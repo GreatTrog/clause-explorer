@@ -2,11 +2,12 @@ import React, { useState } from 'react';
 import { PRACTICE_QUESTIONS } from '../../data/practiceQuestions';
 import { TENSES_PRACTICE_QUESTIONS } from '../../data/tensesPractice';
 import { VOICE_PRACTICE_QUESTIONS } from '../../data/voicePractice';
+import { WORD_CLASSES_PRACTICE_QUESTIONS } from '../../data/wordClassesPractice';
 import type { Chunk } from '../../data/practiceQuestions';
 import { SentenceHighlighter } from './SentenceHighlighter';
 import { FeedbackOverlay } from './FeedbackOverlay';
 import { useGameState } from '../../context/GameStateContext';
-import { ClauseType, GrammarModule, TenseType, VoiceType } from '../../types';
+import { ClauseType, GrammarModule, TenseType, VoiceType, WordClassType } from '../../types';
 import { ModuleSelector } from '../../components/ModuleSelector';
 import { MultipleChoiceQuestion } from '../../components/MultipleChoiceQuestion';
 
@@ -18,6 +19,7 @@ export const PracticeContainer: React.FC = () => {
     const [selectedCategory, setSelectedCategory] = useState<ClauseType | null>(null); // For Clauses
     const [selectedTense, setSelectedTense] = useState<TenseType | null>(null);       // For Tenses
     const [selectedVoice, setSelectedVoice] = useState<VoiceType | null>(null);       // For Voice
+    const [selectedWordClass, setSelectedWordClass] = useState<WordClassType | null>(null); // For Word Classes
 
     // Game state
     const [currentIndex, setCurrentIndex] = useState(0);
@@ -26,7 +28,7 @@ export const PracticeContainer: React.FC = () => {
     const [isAnswered, setIsAnswered] = useState(false);
     const [feedback, setFeedback] = useState<{ isCorrect: boolean; message: string } | null>(null);
 
-    const { updatePracticeScore, updateTenseScore, updateVoiceScore, incrementStreak, resetStreak } = useGameState();
+    const { updatePracticeScore, updateTenseScore, updateVoiceScore, updateWordClassScore, incrementStreak, resetStreak } = useGameState();
 
     // Reset everything when leaving module
     const handleBackToModules = () => {
@@ -34,6 +36,7 @@ export const PracticeContainer: React.FC = () => {
         setSelectedCategory(null);
         setSelectedTense(null);
         setSelectedVoice(null); // Reset voice
+        setSelectedWordClass(null);
         setCurrentIndex(0);
         setFeedback(null);
         setSelectedChunk(null);
@@ -45,6 +48,7 @@ export const PracticeContainer: React.FC = () => {
         setSelectedCategory(null);
         setSelectedTense(null);
         setSelectedVoice(null); // Reset voice
+        setSelectedWordClass(null);
         setCurrentIndex(0);
         setFeedback(null);
         setSelectedChunk(null);
@@ -125,6 +129,9 @@ export const PracticeContainer: React.FC = () => {
         .cat-btn.tense.progressive h3 { color: #8B5CF6; }
         .cat-btn.tense.perfect h3 { color: #EC4899; }
         .cat-btn.tense.modal h3 { color: #EF4444; }
+
+        /* Word Classes Styles */
+        .cat-btn.word-class h3 { color: #8B5CF6; }
         
         .practice-container {
             max-width: 800px;
@@ -182,6 +189,8 @@ export const PracticeContainer: React.FC = () => {
         questions = TENSES_PRACTICE_QUESTIONS.filter(q => q.type === selectedTense);
     } else if (selectedModule === GrammarModule.VOICE && selectedVoice) {
         questions = VOICE_PRACTICE_QUESTIONS.filter(q => q.type === selectedVoice);
+    } else if (selectedModule === GrammarModule.WORD_CLASSES && selectedWordClass) {
+        questions = WORD_CLASSES_PRACTICE_QUESTIONS.filter(q => q.type === selectedWordClass);
     }
 
     const currentQuestion = questions[currentIndex];
@@ -190,7 +199,8 @@ export const PracticeContainer: React.FC = () => {
     if (questions.length === 0 && (
         (selectedModule === GrammarModule.CLAUSES && selectedCategory) ||
         (selectedModule === GrammarModule.TENSES && selectedTense) ||
-        (selectedModule === GrammarModule.VOICE && selectedVoice)
+        (selectedModule === GrammarModule.VOICE && selectedVoice) ||
+        (selectedModule === GrammarModule.WORD_CLASSES && selectedWordClass)
     )) {
         return (
             <div className="container" style={{ textAlign: 'center', marginTop: '4rem' }}>
@@ -321,6 +331,59 @@ export const PracticeContainer: React.FC = () => {
         );
     }
 
+    // WORD CLASSES MENU (New)
+    if (selectedModule === GrammarModule.WORD_CLASSES && !selectedWordClass) {
+        return (
+            <div className="practice-menu">
+                <button className="back-link" onClick={handleBackToModules} style={{ alignSelf: 'flex-start' }}>← modules</button>
+                <h2>Choose a Word Class to Practice</h2>
+                <div className="category-grid">
+                    <button className="cat-btn word-class" onClick={() => setSelectedWordClass(WordClassType.NOUN)}>
+                        <div className="icon">📦</div>
+                        <h3>Nouns</h3>
+                        <p>Naming words</p>
+                    </button>
+                    <button className="cat-btn word-class" onClick={() => setSelectedWordClass(WordClassType.VERB)}>
+                        <div className="icon">🏃</div>
+                        <h3>Verbs</h3>
+                        <p>Action words</p>
+                    </button>
+                    <button className="cat-btn word-class" onClick={() => setSelectedWordClass(WordClassType.ADJECTIVE)}>
+                        <div className="icon">🎨</div>
+                        <h3>Adjectives</h3>
+                        <p>Describing nouns</p>
+                    </button>
+                    <button className="cat-btn word-class" onClick={() => setSelectedWordClass(WordClassType.ADVERB)}>
+                        <div className="icon">⚡</div>
+                        <h3>Adverbs</h3>
+                        <p>Describing verbs</p>
+                    </button>
+                    <button className="cat-btn word-class" onClick={() => setSelectedWordClass(WordClassType.PRONOUN)}>
+                        <div className="icon">👤</div>
+                        <h3>Pronouns</h3>
+                        <p>He, She, It</p>
+                    </button>
+                    <button className="cat-btn word-class" onClick={() => setSelectedWordClass(WordClassType.PREPOSITION)}>
+                        <div className="icon">📍</div>
+                        <h3>Prepositions</h3>
+                        <p>Position words</p>
+                    </button>
+                    <button className="cat-btn word-class" onClick={() => setSelectedWordClass(WordClassType.DETERMINER)}>
+                        <div className="icon">👈</div>
+                        <h3>Determiners</h3>
+                        <p>The, A, That</p>
+                    </button>
+                    <button className="cat-btn word-class" onClick={() => setSelectedWordClass(WordClassType.INTERJECTION)}>
+                        <div className="icon">❗</div>
+                        <h3>Interjections</h3>
+                        <p>Wow! Ouch!</p>
+                    </button>
+                </div>
+                <style>{PRACTICE_STYLES}</style>
+            </div>
+        );
+    }
+
 
     // --- Game Logic functions ---
 
@@ -334,9 +397,9 @@ export const PracticeContainer: React.FC = () => {
             incrementStreak();
             if (selectedCategory) updatePracticeScore(selectedCategory, 10);
             if (selectedTense) updateTenseScore(selectedTense, 10);
-            if (selectedVoice) {
-                updateVoiceScore(selectedVoice, 10);
-            }
+            if (selectedVoice) updateVoiceScore(selectedVoice, 10);
+            if (selectedWordClass) updateWordClassScore(selectedWordClass, 10);
+
             setFeedback({ isCorrect: true, message: "Correct! Well done." });
         } else {
             resetStreak();
@@ -359,10 +422,9 @@ export const PracticeContainer: React.FC = () => {
         if (isCorrect) {
             incrementStreak();
             if (selectedTense) updateTenseScore(selectedTense, 10);
-            if (selectedVoice) {
-                // We likely already have updateVoiceScore from destructured hook, but let's be safe
-                updateVoiceScore(selectedVoice, 10);
-            }
+            if (selectedVoice) updateVoiceScore(selectedVoice, 10);
+            if (selectedWordClass) updateWordClassScore(selectedWordClass, 10);
+
             setFeedback({ isCorrect: true, message: "Correct!" });
         } else {
             resetStreak();
@@ -441,7 +503,7 @@ export const PracticeContainer: React.FC = () => {
             {isMC && (
                 <MultipleChoiceQuestion
                     question=""  // Using instruction card above for the question/title 
-                    options={currentQuestion.options}
+                    options={currentQuestion.options!}
                     selectedOptionId={selectedOptionId}
                     isAnswered={isAnswered}
                     onSelect={handleSelectOption}

@@ -46,7 +46,7 @@ export const TableClassifier: React.FC<TableClassifierProps> = ({ question, onCo
                         <tr>
                             <th>Clause</th>
                             {question.columns.map(col => (
-                                <th key={col}>{getClauseDisplayName(col)}</th>
+                                <th key={col}>{getClauseDisplayName(col as any)}</th>
                             ))}
                         </tr>
                     </thead>

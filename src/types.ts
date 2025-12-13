@@ -11,6 +11,7 @@ export const GrammarModule = {
     CLAUSES: 'CLAUSES',
     TENSES: 'TENSES',
     VOICE: 'VOICE',
+    WORD_CLASSES: 'WORD_CLASSES',
 } as const;
 
 export type GrammarModule = typeof GrammarModule[keyof typeof GrammarModule];
@@ -45,23 +46,37 @@ export const VoiceType = {
 
 export type VoiceType = typeof VoiceType[keyof typeof VoiceType];
 
+export const WordClassType = {
+    NOUN: 'WC_NOUN',
+    VERB: 'WC_VERB',
+    ADJECTIVE: 'WC_ADJECTIVE',
+    ADVERB: 'WC_ADVERB',
+    PRONOUN: 'WC_PRONOUN',
+    PREPOSITION: 'WC_PREPOSITION',
+    DETERMINER: 'WC_DETERMINER',
+    INTERJECTION: 'WC_INTERJECTION',
+} as const;
+
+export type WordClassType = typeof WordClassType[keyof typeof WordClassType];
+
 export interface UserProgress {
     learnCompleted: boolean;
     practiceScores: Record<ClauseType, number>;
     tenseScores: Record<TenseType, number>;
     voiceScores: Record<VoiceType, number>;
+    wordClassScores: Record<WordClassType, number>;
     masteryScore: number;
     streak: number;
 }
 
-export const getClauseDisplayName = (type: ClauseType | TenseType | VoiceType): string => {
+export const getClauseDisplayName = (type: ClauseType | TenseType | VoiceType | WordClassType): string => {
     switch (type) {
         // Clauses
         case ClauseType.MAIN: return 'Main Clause';
         case ClauseType.SUBORDINATE: return 'Subordinate Clause';
         case ClauseType.RELATIVE: return 'Relative Clause';
         case ClauseType.CONJUNCTION: return 'Subordinating Conjunction';
-        case ClauseType.PRONOUN: return 'Relative Pronoun';
+        case ClauseType.PRONOUN: return 'Relative Pronoun'; // Keeps legacy Clause pronoun
 
         // Tenses
         case TenseType.SIMPLE_PAST: return 'Simple Past';
@@ -77,6 +92,16 @@ export const getClauseDisplayName = (type: ClauseType | TenseType | VoiceType): 
         case VoiceType.ACTIVE: return 'Active Voice';
         case VoiceType.PASSIVE: return 'Passive Voice';
 
-        default: return (type as string).replace(/_/g, ' '); // Fallback for tenses mostly works
+        // Word Classes
+        case 'WC_NOUN': return 'Noun';
+        case 'WC_VERB': return 'Verb';
+        case 'WC_ADJECTIVE': return 'Adjective';
+        case 'WC_ADVERB': return 'Adverb';
+        case 'WC_PRONOUN': return 'Pronoun';
+        case 'WC_PREPOSITION': return 'Preposition';
+        case 'WC_DETERMINER': return 'Determiner';
+        case 'WC_INTERJECTION': return 'Interjection';
+
+        default: return (type as string).replace(/_/g, ' ');
     }
 };

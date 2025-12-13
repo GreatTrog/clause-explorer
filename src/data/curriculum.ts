@@ -1,13 +1,13 @@
-import { ClauseType, TenseType, VoiceType } from '../types';
+import { ClauseType, TenseType, VoiceType, WordClassType } from '../types';
 
 export interface LearnPage {
     id: string;
-    type: ClauseType | TenseType | VoiceType;
+    type: ClauseType | TenseType | VoiceType | WordClassType;
     title: string;
     definition: string;
     mascotDialogue: string;
     exampleSentence: string;
-    highlightedText: string;
+    highlightedText: string | string[];
 }
 
 export const LEARN_CONTENT: LearnPage[] = [

@@ -1,4 +1,4 @@
-import { ClauseType, TenseType, VoiceType } from '../types';
+import { ClauseType, TenseType, VoiceType, WordClassType } from '../types';
 
 export interface Chunk {
     id: string;
@@ -8,7 +8,7 @@ export interface Chunk {
 
 export interface PracticeQuestion {
     id: string;
-    type: ClauseType | TenseType | VoiceType;
+    type: ClauseType | TenseType | VoiceType | WordClassType;
     instructions?: string; // Optional because sometime we use question text
     text?: string; // Some questions use text instead of instructions
     hint: string;

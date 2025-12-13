@@ -36,6 +36,15 @@ export const ModuleSelector: React.FC<ModuleSelectorProps> = ({ onSelect }) => {
                     <h3>Active & Passive</h3>
                     <p>Who is doing the action?</p>
                 </button>
+
+                <button
+                    className="module-card words"
+                    onClick={() => onSelect(GrammarModule.WORD_CLASSES)}
+                >
+                    <div className="icon">📝</div>
+                    <h3>Word Classes</h3>
+                    <p>Nouns, Verbs, Adjectives...</p>
+                </button>
             </div>
 
             <style>{`
@@ -94,6 +103,7 @@ export const ModuleSelector: React.FC<ModuleSelectorProps> = ({ onSelect }) => {
                 .module-card.clauses:hover { border-bottom: 4px solid var(--color-primary); }
                 .module-card.tenses:hover { border-bottom: 4px solid var(--color-secondary); }
                 .module-card.voice:hover { border-bottom: 4px solid #EC4899; }
+                .module-card.words:hover { border-bottom: 4px solid #8B5CF6; }
             `}</style>
         </div>
     );

@@ -3,6 +3,7 @@ import { MASTERY_QUESTIONS, MasteryQuestionType } from '../../data/masteryQuesti
 import type { MasteryQuestion } from '../../data/masteryQuestions';
 import { TENSES_MASTERY_QUESTIONS } from '../../data/tensesMastery';
 import { VOICE_MASTERY_QUESTIONS } from '../../data/voiceMastery';
+import { WORD_CLASSES_MASTERY_QUESTIONS } from '../../data/wordClassesMastery';
 import { DragDropZone } from './DragDropZone';
 import { SentenceCompleter } from './SentenceCompleter';
 import { TableClassifier } from './TableClassifier';
@@ -41,6 +42,9 @@ export const MasteryContainer: React.FC = () => {
             setCurrentIndex(0);
         } else if (selectedModule === GrammarModule.VOICE) {
             setQuestions(shuffleArray(VOICE_MASTERY_QUESTIONS));
+            setCurrentIndex(0);
+        } else if (selectedModule === GrammarModule.WORD_CLASSES) {
+            setQuestions(shuffleArray(WORD_CLASSES_MASTERY_QUESTIONS));
             setCurrentIndex(0);
         }
     }, [selectedModule]);

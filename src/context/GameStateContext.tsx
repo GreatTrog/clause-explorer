@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { ClauseType, TenseType, VoiceType } from '../types';
+import { ClauseType, TenseType, VoiceType, WordClassType } from '../types';
 import type { UserProgress } from '../types';
 
 interface GameStateContextType {
@@ -7,6 +7,7 @@ interface GameStateContextType {
     updatePracticeScore: (type: ClauseType, score: number) => void;
     updateTenseScore: (type: TenseType, score: number) => void;
     updateVoiceScore: (type: VoiceType, score: number) => void;
+    updateWordClassScore: (type: WordClassType, score: number) => void;
     updateMasteryScore: (score: number) => void;
     incrementStreak: () => void;
     resetStreak: () => void;
@@ -36,6 +37,16 @@ const INITIAL_PROGRESS: UserProgress = {
         [VoiceType.ACTIVE]: 0,
         [VoiceType.PASSIVE]: 0,
     },
+    wordClassScores: {
+        [WordClassType.NOUN]: 0,
+        [WordClassType.VERB]: 0,
+        [WordClassType.ADJECTIVE]: 0,
+        [WordClassType.ADVERB]: 0,
+        [WordClassType.PRONOUN]: 0,
+        [WordClassType.PREPOSITION]: 0,
+        [WordClassType.DETERMINER]: 0,
+        [WordClassType.INTERJECTION]: 0,
+    },
     masteryScore: 0,
     streak: 0,
 };
@@ -56,6 +67,9 @@ export const GameStateProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         }
         if (!migrated.voiceScores) {
             migrated.voiceScores = INITIAL_PROGRESS.voiceScores;
+        }
+        if (!migrated.wordClassScores) {
+            migrated.wordClassScores = INITIAL_PROGRESS.wordClassScores;
         }
 
         return migrated;
@@ -95,6 +109,16 @@ export const GameStateProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         }));
     };
 
+    const updateWordClassScore = (type: WordClassType, score: number) => {
+        setProgress(prev => ({
+            ...prev,
+            wordClassScores: {
+                ...prev.wordClassScores,
+                [type]: Math.max(prev.wordClassScores[type], score)
+            }
+        }));
+    };
+
     const updateMasteryScore = (score: number) => {
         setProgress(prev => ({
             ...prev,
@@ -120,6 +144,7 @@ export const GameStateProvider: React.FC<{ children: React.ReactNode }> = ({ chi
             updatePracticeScore,
             updateTenseScore,
             updateVoiceScore,
+            updateWordClassScore,
             updateMasteryScore,
             incrementStreak,
             resetStreak,

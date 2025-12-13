@@ -73,7 +73,7 @@ export const DragDropZone: React.FC<DragDropZoneProps> = ({ question, onComplete
             onDragOver={handleDragOver}
             onDrop={(e) => handleDrop(e, zone)}
           >
-            <h3>{getClauseDisplayName(zone)}</h3>
+            <h3>{getClauseDisplayName(zone as any)}</h3>
             <div className="zone-items">
               {question.items.filter(i => placedItems[i.id] === zone).map(item => (
                 <div
