@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import type { DragDropQuestion } from '../../data/masteryQuestions';
-import { ClauseType, getClauseDisplayName } from '../../types';
+import type { DragDropQuestion, GrammarCategory } from '../../data/masteryQuestions';
+import { getClauseDisplayName } from '../../types';
 
 interface DragDropZoneProps {
   question: DragDropQuestion;
@@ -9,7 +9,7 @@ interface DragDropZoneProps {
 
 export const DragDropZone: React.FC<DragDropZoneProps> = ({ question, onComplete }) => {
   // Store items that have been placed: { [itemId]: zoneType }
-  const [placedItems, setPlacedItems] = useState<Record<string, ClauseType>>({});
+  const [placedItems, setPlacedItems] = useState<Record<string, GrammarCategory>>({});
 
   const handleDragStart = (e: React.DragEvent, id: string) => {
     e.dataTransfer.setData('text/plain', id);
@@ -21,7 +21,7 @@ export const DragDropZone: React.FC<DragDropZoneProps> = ({ question, onComplete
     e.dataTransfer.dropEffect = 'move';
   };
 
-  const handleDrop = (e: React.DragEvent, zone: ClauseType) => {
+  const handleDrop = (e: React.DragEvent, zone: GrammarCategory) => {
     e.preventDefault();
     const id = e.dataTransfer.getData('text/plain');
 

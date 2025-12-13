@@ -1,18 +1,22 @@
-import { ClauseType } from '../types';
+import { ClauseType, TenseType } from '../types';
 
 export const MasteryQuestionType = {
     SELECT: 'SELECT',
     DRAG_DROP: 'DRAG_DROP',
     COMPLETE: 'COMPLETE',
     TABLE: 'TABLE',
+    TEXT_INPUT: 'TEXT_INPUT',
 } as const;
 
 export type MasteryQuestionType = typeof MasteryQuestionType[keyof typeof MasteryQuestionType];
 
+// Union type for any grammar category used in sorting/classification
+export type GrammarCategory = ClauseType | TenseType;
+
 export interface SelectQuestion {
     type: typeof MasteryQuestionType.SELECT;
     id: string;
-    clauseType: ClauseType; // Used for "Find the X"
+    clauseType: GrammarCategory; // Used for "Find the X", fits both Clause and Tense
     instructions: string;
     chunks: { id: string; text: string; isCorrect: boolean }[];
 }
@@ -20,7 +24,7 @@ export interface SelectQuestion {
 export interface DragDropItem {
     id: string;
     text: string;
-    category: ClauseType;
+    category: GrammarCategory;
 }
 
 export interface DragDropQuestion {
@@ -28,7 +32,7 @@ export interface DragDropQuestion {
     id: string;
     instructions: string;
     items: DragDropItem[];
-    zones: ClauseType[];
+    zones: GrammarCategory[];
 }
 
 export interface CompleteQuestion {
@@ -40,21 +44,31 @@ export interface CompleteQuestion {
     options: { id: string; text: string; isCorrect: boolean }[];
 }
 
+export interface TextInputQuestion {
+    type: typeof MasteryQuestionType.TEXT_INPUT;
+    id: string;
+    instructions: string;
+    sentenceBefore: string;
+    sentenceAfter: string;
+    correctAnswer: string;
+    promptLabel?: string; // e.g. "(to run)"
+}
+
 export interface TableRow {
     id: string;
     text: string;
-    correctType: ClauseType;
+    correctType: GrammarCategory;
 }
 
 export interface TableQuestion {
     type: typeof MasteryQuestionType.TABLE;
     id: string;
     instructions: string;
-    columns: ClauseType[];
+    columns: GrammarCategory[];
     rows: TableRow[];
 }
 
-export type MasteryQuestion = SelectQuestion | DragDropQuestion | CompleteQuestion | TableQuestion;
+export type MasteryQuestion = SelectQuestion | DragDropQuestion | CompleteQuestion | TableQuestion | TextInputQuestion;
 
 export const MASTERY_QUESTIONS: MasteryQuestion[] = [
     // --- DRAG AND DROP (Sorting) ---

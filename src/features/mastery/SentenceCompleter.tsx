@@ -33,7 +33,7 @@ export const SentenceCompleter: React.FC<SentenceCompleterProps> = ({ question, 
                 <span className="blank-spot">
                     {selectedOptionId
                         ? question.options.find(o => o.id === selectedOptionId)?.text
-                        : '________'}
+                        : '\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0'}
                 </span>
                 <span>{question.sentenceAfter}</span>
             </div>

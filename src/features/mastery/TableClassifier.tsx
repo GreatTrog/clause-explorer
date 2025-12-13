@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import type { TableQuestion } from '../../data/masteryQuestions';
-import { ClauseType, getClauseDisplayName } from '../../types';
+import type { TableQuestion, GrammarCategory } from '../../data/masteryQuestions';
+import { getClauseDisplayName } from '../../types';
 
 interface TableClassifierProps {
     question: TableQuestion;
@@ -9,10 +9,10 @@ interface TableClassifierProps {
 
 export const TableClassifier: React.FC<TableClassifierProps> = ({ question, onComplete }) => {
     // Store user selections: { [rowId]: selectedColumnType }
-    const [selections, setSelections] = useState<Record<string, ClauseType>>({});
+    const [selections, setSelections] = useState<Record<string, GrammarCategory>>({});
     const [submitted, setSubmitted] = useState(false);
 
-    const handleCheck = (rowId: string, type: ClauseType) => {
+    const handleCheck = (rowId: string, type: GrammarCategory) => {
         if (submitted) return;
         setSelections(prev => ({
             ...prev,

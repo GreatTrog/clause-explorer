@@ -1,19 +1,45 @@
 import React, { useState } from 'react';
 import { MASTERY_QUESTIONS, MasteryQuestionType } from '../../data/masteryQuestions';
+import type { MasteryQuestion } from '../../data/masteryQuestions';
+import { TENSES_MASTERY_QUESTIONS } from '../../data/tensesMastery';
 import { DragDropZone } from './DragDropZone';
 import { SentenceCompleter } from './SentenceCompleter';
 import { TableClassifier } from './TableClassifier';
+import { WordInputQuestion } from './WordInputQuestion';
 import { SentenceHighlighter } from '../practice/SentenceHighlighter';
 import { FeedbackOverlay } from '../practice/FeedbackOverlay';
 import { useGameState } from '../../context/GameStateContext';
 import { ModuleSelector } from '../../components/ModuleSelector';
 import { GrammarModule } from '../../types';
 
+// Simple Fisher-Yates shuffle
+function shuffleArray<T>(array: T[]): T[] {
+    const newArray = [...array];
+    for (let i = newArray.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+    }
+    return newArray;
+}
+
 export const MasteryContainer: React.FC = () => {
     const [selectedModule, setSelectedModule] = useState<GrammarModule | null>(null);
+    // Store shuffled questions in state so order persists during render
+    const [questions, setQuestions] = useState<MasteryQuestion[]>([]);
     const [currentIndex, setCurrentIndex] = useState(0);
     const [feedback, setFeedback] = useState<{ isCorrect: boolean; message: string } | null>(null);
     const { updateMasteryScore, incrementStreak, resetStreak } = useGameState();
+
+    // Initialize questions on module selection
+    React.useEffect(() => {
+        if (selectedModule === GrammarModule.CLAUSES) {
+            setQuestions(shuffleArray(MASTERY_QUESTIONS));
+            setCurrentIndex(0);
+        } else if (selectedModule === GrammarModule.TENSES) {
+            setQuestions(shuffleArray(TENSES_MASTERY_QUESTIONS));
+            setCurrentIndex(0);
+        }
+    }, [selectedModule]);
 
     if (!selectedModule) {
         return (
@@ -23,21 +49,14 @@ export const MasteryContainer: React.FC = () => {
         );
     }
 
-    if (selectedModule === GrammarModule.TENSES) {
-        return (
-            <div className="container" style={{ textAlign: 'center', marginTop: '4rem' }}>
-                <button className="back-link" onClick={() => setSelectedModule(null)} style={{ float: 'left' }}>← modules</button>
-                <br /><br />
-                <h2>🚧 Tenses Mastery Coming Soon! 🚧</h2>
-                <p>We are building this right now.</p>
-            </div>
-        );
-    }
-
-    // CLause Mastery Logic
-    const questions = MASTERY_QUESTIONS;
     const currentQuestion = questions[currentIndex];
-    const isFinished = currentIndex >= questions.length;
+    // Check if finished based on the potentially empty questions array to avoid errors
+    const isFinished = questions.length > 0 && currentIndex >= questions.length;
+
+    // Safety check if questions haven't loaded yet
+    if (questions.length === 0) {
+        return <div className="container">Loading...</div>;
+    }
 
     const handleQuestionComplete = (isSuccess: boolean) => {
         if (isSuccess) {
@@ -55,16 +74,14 @@ export const MasteryContainer: React.FC = () => {
         if (currentIndex < questions.length - 1) {
             setCurrentIndex(prev => prev + 1);
         } else {
-            alert("You are a Clause Monkey Master!"); // Temporary end state
+            // End of the game logic
+            // For now just increment to trigger isFinished
             setCurrentIndex(prev => prev + 1);
         }
     };
 
     const handleTryAgain = () => {
-        // For mastery, maybe we enforce getting it right? 
-        // Or we just move on? Let's just reset feedback to allow retry if logic permits,
-        // but for DragDrop it's complex state. Simpler to just show "Next" on failure for now?
-        // Actually, let's just create a "reset" key on the component to force re-render.
+        // Reset feedback to try again (if applicable)
         setFeedback(null);
     };
 
@@ -72,7 +89,9 @@ export const MasteryContainer: React.FC = () => {
         return (
             <div className="container" style={{ textAlign: 'center' }}>
                 <h2>Mastery Complete! 🏆</h2>
-                <button className="btn-primary" onClick={() => window.location.reload()}>Back to Home</button>
+                <div style={{ fontSize: '3rem', margin: '2rem' }}>🎉</div>
+                <p>You've mastered this set!</p>
+                <button className="btn-primary" onClick={() => setSelectedModule(null)}>Back to Modules</button>
             </div>
         );
     }
@@ -81,7 +100,7 @@ export const MasteryContainer: React.FC = () => {
         <div className="mastery-container">
             <div className="header-info" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <button className="back-link" onClick={() => setSelectedModule(null)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--color-primary)', textDecoration: 'underline' }}>← modules</button>
-                <span className="question-counter">Challenge {currentIndex + 1}</span>
+                <span className="question-counter">Challenge {currentIndex + 1} / {questions.length}</span>
             </div>
 
             <div className="instruction-card">
@@ -93,7 +112,7 @@ export const MasteryContainer: React.FC = () => {
                 {currentQuestion.type === MasteryQuestionType.SELECT && (
                     <SentenceHighlighter
                         chunks={currentQuestion.chunks}
-                        selectedChunkId={null} // Controlled internally by highlighter mostly, strictly we should hoist state if we want strict control
+                        selectedChunkId={null}
                         isAnswered={!!feedback}
                         onSelect={(chunk) => handleQuestionComplete(chunk.isCorrect)}
                     />
@@ -115,6 +134,13 @@ export const MasteryContainer: React.FC = () => {
 
                 {currentQuestion.type === MasteryQuestionType.TABLE && (
                     <TableClassifier
+                        question={currentQuestion}
+                        onComplete={handleQuestionComplete}
+                    />
+                )}
+
+                {currentQuestion.type === MasteryQuestionType.TEXT_INPUT && (
+                    <WordInputQuestion
                         question={currentQuestion}
                         onComplete={handleQuestionComplete}
                     />
