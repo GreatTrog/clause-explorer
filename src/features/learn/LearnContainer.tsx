@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { LEARN_CONTENT } from '../../data/curriculum';
+import { TENSES_CONTENT } from '../../data/tensesCurriculum';
 import { LearnCard } from './LearnCard';
 import { useGameState } from '../../context/GameStateContext';
 import { ModuleSelector } from '../../components/ModuleSelector';
@@ -22,9 +23,7 @@ export const LearnContainer: React.FC<LearnContainerProps> = ({ onComplete }) =>
     );
   }
 
-  // TODO: Add different content for TENSES when available
-  // For now, if TENSES is selected, we could show a "Coming Soon" or just the clauses again for testing
-  const content = selectedModule === GrammarModule.CLAUSES ? LEARN_CONTENT : []; // Placeholder empty for Tenses
+  const content = selectedModule === GrammarModule.CLAUSES ? LEARN_CONTENT : TENSES_CONTENT;
 
   if (content.length === 0) {
     return (

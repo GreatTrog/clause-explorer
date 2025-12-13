@@ -1,8 +1,8 @@
-import { ClauseType } from '../types';
+import { ClauseType, TenseType } from '../types';
 
 export interface LearnPage {
     id: string;
-    type: ClauseType;
+    type: ClauseType | TenseType;
     title: string;
     definition: string;
     mascotDialogue: string;

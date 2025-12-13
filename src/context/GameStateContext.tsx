@@ -1,10 +1,11 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { ClauseType } from '../types';
+import { ClauseType, TenseType } from '../types';
 import type { UserProgress } from '../types';
 
 interface GameStateContextType {
     progress: UserProgress;
     updatePracticeScore: (type: ClauseType, score: number) => void;
+    updateTenseScore: (type: TenseType, score: number) => void;
     updateMasteryScore: (score: number) => void;
     incrementStreak: () => void;
     resetStreak: () => void;
@@ -20,6 +21,16 @@ const INITIAL_PROGRESS: UserProgress = {
         [ClauseType.CONJUNCTION]: 0,
         [ClauseType.PRONOUN]: 0,
     },
+    tenseScores: {
+        [TenseType.SIMPLE_PAST]: 0,
+        [TenseType.SIMPLE_PRESENT]: 0,
+        [TenseType.SIMPLE_FUTURE]: 0,
+        [TenseType.PAST_PROGRESSIVE]: 0,
+        [TenseType.PRESENT_PROGRESSIVE]: 0,
+        [TenseType.PAST_PERFECT]: 0,
+        [TenseType.PRESENT_PERFECT]: 0,
+        [TenseType.MODAL]: 0,
+    },
     masteryScore: 0,
     streak: 0,
 };
@@ -29,7 +40,13 @@ const GameStateContext = createContext<GameStateContextType | undefined>(undefin
 export const GameStateProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const [progress, setProgress] = useState<UserProgress>(() => {
         const saved = localStorage.getItem('clause-explorer-progress');
-        return saved ? JSON.parse(saved) : INITIAL_PROGRESS;
+        // Handle migration if needed by merging with INITIAL_PROGRESS
+        const parsed = saved ? JSON.parse(saved) : INITIAL_PROGRESS;
+        // Simple migration check: if tenseScores is missing, add it
+        if (!parsed.tenseScores) {
+            return { ...parsed, tenseScores: INITIAL_PROGRESS.tenseScores };
+        }
+        return parsed;
     });
 
     useEffect(() => {
@@ -42,6 +59,16 @@ export const GameStateProvider: React.FC<{ children: React.ReactNode }> = ({ chi
             practiceScores: {
                 ...prev.practiceScores,
                 [type]: Math.max(prev.practiceScores[type], score) // Keep highest score
+            }
+        }));
+    };
+
+    const updateTenseScore = (type: TenseType, score: number) => {
+        setProgress(prev => ({
+            ...prev,
+            tenseScores: {
+                ...prev.tenseScores,
+                [type]: Math.max(prev.tenseScores[type], score)
             }
         }));
     };
@@ -69,6 +96,7 @@ export const GameStateProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         <GameStateContext.Provider value={{
             progress,
             updatePracticeScore,
+            updateTenseScore,
             updateMasteryScore,
             incrementStreak,
             resetStreak,

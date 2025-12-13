@@ -79,6 +79,13 @@ export const LearnCard: React.FC<LearnCardProps> = ({ page }) => {
         .badge.conjunction { background: var(--color-conjunction); }
         .badge.pronoun { background: var(--color-pronoun); }
 
+        /* Tenses Badges */
+        .badge.simple_past, .badge.simple_present, .badge.simple_future { background: #3B82F6; } /* Blue like Main */
+        .badge.past_progressive, .badge.present_progressive { background: #10B981; } /* Green */
+        .badge.past_perfect, .badge.present_perfect { background: #8B5CF6; } /* Purple */
+        .badge.modal { background: #EC4899; } /* Pink */
+
+
         .card-header h2 {
           font-size: 2.5rem;
           color: var(--color-primary);
