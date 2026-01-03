@@ -4,19 +4,22 @@ import type { TextInputQuestion } from '../../data/masteryQuestions';
 interface WordInputQuestionProps {
     question: TextInputQuestion;
     onComplete: (isSuccess: boolean) => void;
+    isAnswered?: boolean;
 }
 
-export const WordInputQuestion: React.FC<WordInputQuestionProps> = ({ question, onComplete }) => {
+export const WordInputQuestion: React.FC<WordInputQuestionProps> = ({ question, onComplete, isAnswered }) => {
     const [input, setInput] = useState('');
     const [status, setStatus] = useState<'IDLE' | 'CORRECT' | 'INCORRECT'>('IDLE');
     const inputRef = useRef<HTMLInputElement>(null);
 
     useEffect(() => {
-        // Reset state when question changes
-        setInput('');
-        setStatus('IDLE');
-        if (inputRef.current) inputRef.current.focus();
-    }, [question.id]);
+        // Reset state when question changes or if explicitly reset via isAnswered being false after being true
+        if (!isAnswered) {
+            setInput('');
+            setStatus('IDLE');
+            if (inputRef.current) inputRef.current.focus();
+        }
+    }, [question.id, isAnswered]);
 
     const handleSubmit = (e?: React.FormEvent) => {
         if (e) e.preventDefault();
@@ -75,7 +78,7 @@ export const WordInputQuestion: React.FC<WordInputQuestionProps> = ({ question, 
                     onClick={() => handleSubmit()}
                     disabled={input.length === 0}
                 >
-                    Check Spelling
+                    Check Answer
                 </button>
             )}
 

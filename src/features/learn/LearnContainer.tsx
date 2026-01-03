@@ -3,6 +3,7 @@ import { LEARN_CONTENT } from '../../data/curriculum';
 import { TENSES_CONTENT } from '../../data/tensesCurriculum';
 import { VOICE_CURRICULUM } from '../../data/voiceCurriculum';
 import { WORD_CLASSES_CURRICULUM } from '../../data/wordClassesCurriculum';
+import { PUNCTUATION_CURRICULUM } from '../../data/punctuationCurriculum';
 import { LearnCard } from './LearnCard';
 import { useGameState } from '../../context/GameStateContext';
 import { ModuleSelector } from '../../components/ModuleSelector';
@@ -148,9 +149,10 @@ export const LearnContainer: React.FC<LearnContainerProps> = ({ onComplete }) =>
     if (selectedWordClass) {
       content = WORD_CLASSES_CURRICULUM.filter(page => page.type === selectedWordClass);
     } else {
-      // Fallback (shouldn't be reached if logic above holds)
       content = WORD_CLASSES_CURRICULUM;
     }
+  } else if (selectedModule === GrammarModule.PUNCTUATION) {
+    content = PUNCTUATION_CURRICULUM;
   }
 
   if (content.length === 0) {

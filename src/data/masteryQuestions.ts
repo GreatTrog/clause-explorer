@@ -6,6 +6,7 @@ export const MasteryQuestionType = {
     COMPLETE: 'COMPLETE',
     TABLE: 'TABLE',
     TEXT_INPUT: 'TEXT_INPUT',
+    PUNCTUATION_EDIT: 'PUNCTUATION_EDIT',
 } as const;
 
 export type MasteryQuestionType = typeof MasteryQuestionType[keyof typeof MasteryQuestionType];
@@ -54,6 +55,14 @@ export interface TextInputQuestion {
     promptLabel?: string; // e.g. "(to run)"
 }
 
+export interface PunctuationEditQuestion {
+    type: typeof MasteryQuestionType.PUNCTUATION_EDIT;
+    id: string;
+    instructions: string;
+    originalText: string;
+    correctSentence: string | string[];
+}
+
 export interface TableRow {
     id: string;
     text: string;
@@ -68,7 +77,7 @@ export interface TableQuestion {
     rows: TableRow[];
 }
 
-export type MasteryQuestion = SelectQuestion | DragDropQuestion | CompleteQuestion | TableQuestion | TextInputQuestion;
+export type MasteryQuestion = SelectQuestion | DragDropQuestion | CompleteQuestion | TableQuestion | TextInputQuestion | PunctuationEditQuestion;
 
 export const MASTERY_QUESTIONS: MasteryQuestion[] = [
     // --- DRAG AND DROP (Sorting) ---

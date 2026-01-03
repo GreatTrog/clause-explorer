@@ -69,6 +69,10 @@ export const FeedbackOverlay: React.FC<FeedbackOverlayProps> = ({
           font-size: 3rem;
           margin-bottom: 1rem;
         }
+        .feedback-card p {
+          white-space: pre-wrap;
+          margin-bottom: 1rem;
+        }
 
         .is-correct .feedback-icon {
           animation: bounce 1s infinite;

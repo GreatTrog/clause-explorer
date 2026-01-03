@@ -4,10 +4,12 @@ import type { MasteryQuestion } from '../../data/masteryQuestions';
 import { TENSES_MASTERY_QUESTIONS } from '../../data/tensesMastery';
 import { VOICE_MASTERY_QUESTIONS } from '../../data/voiceMastery';
 import { WORD_CLASSES_MASTERY_QUESTIONS } from '../../data/wordClassesMastery';
+import { PUNCTUATION_MASTERY_QUESTIONS } from '../../data/punctuationMastery';
 import { DragDropZone } from './DragDropZone';
 import { SentenceCompleter } from './SentenceCompleter';
 import { TableClassifier } from './TableClassifier';
 import { WordInputQuestion } from './WordInputQuestion';
+import { PunctuationEditor } from '../practice/PunctuationEditor';
 import { SentenceHighlighter } from '../practice/SentenceHighlighter';
 import { FeedbackOverlay } from '../practice/FeedbackOverlay';
 import { useGameState } from '../../context/GameStateContext';
@@ -46,6 +48,9 @@ export const MasteryContainer: React.FC = () => {
         } else if (selectedModule === GrammarModule.WORD_CLASSES) {
             setQuestions(shuffleArray(WORD_CLASSES_MASTERY_QUESTIONS));
             setCurrentIndex(0);
+        } else if (selectedModule === GrammarModule.PUNCTUATION) {
+            setQuestions(shuffleArray(PUNCTUATION_MASTERY_QUESTIONS));
+            setCurrentIndex(0);
         }
     }, [selectedModule]);
 
@@ -73,7 +78,16 @@ export const MasteryContainer: React.FC = () => {
             setFeedback({ isCorrect: true, message: "Masterful!" });
         } else {
             resetStreak();
-            setFeedback({ isCorrect: false, message: "Oops! Keep practicing." });
+            let message = "Oops! Keep practicing.";
+            if (currentQuestion && currentQuestion.type === MasteryQuestionType.TEXT_INPUT) {
+                message = `Not quite right. The correct version is:\n\n${currentQuestion.correctAnswer}`;
+            } else if (currentQuestion && currentQuestion.type === MasteryQuestionType.PUNCTUATION_EDIT) {
+                const displayCorrect = Array.isArray(currentQuestion.correctSentence)
+                    ? currentQuestion.correctSentence[0]
+                    : currentQuestion.correctSentence;
+                message = `Not quite right. The correct version is:\n\n${displayCorrect}`;
+            }
+            setFeedback({ isCorrect: false, message });
         }
     };
 
@@ -116,7 +130,7 @@ export const MasteryContainer: React.FC = () => {
                 <h2>{currentQuestion.instructions}</h2>
             </div>
 
-            <div className="game-area" key={currentQuestion.id + (feedback ? '-done' : '')}>
+            <div className="game-area" key={currentQuestion.id}>
                 {currentQuestion.type === MasteryQuestionType.SELECT && (
                     <SentenceHighlighter
                         chunks={currentQuestion.chunks}
@@ -151,6 +165,17 @@ export const MasteryContainer: React.FC = () => {
                     <WordInputQuestion
                         question={currentQuestion}
                         onComplete={handleQuestionComplete}
+                        isAnswered={!!feedback}
+                    />
+                )}
+
+                {currentQuestion.type === MasteryQuestionType.PUNCTUATION_EDIT && (
+                    <PunctuationEditor
+                        key={currentQuestion.id}
+                        originalText={currentQuestion.originalText}
+                        correctSentence={currentQuestion.correctSentence}
+                        onComplete={handleQuestionComplete}
+                        isAnswered={!!feedback}
                     />
                 )}
             </div>

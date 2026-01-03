@@ -12,6 +12,7 @@ export const GrammarModule = {
     TENSES: 'TENSES',
     VOICE: 'VOICE',
     WORD_CLASSES: 'WORD_CLASSES',
+    PUNCTUATION: 'PUNCTUATION',
 } as const;
 
 export type GrammarModule = typeof GrammarModule[keyof typeof GrammarModule];
@@ -22,6 +23,7 @@ export const ClauseType = {
     RELATIVE: 'RELATIVE',
     CONJUNCTION: 'CONJUNCTION',
     PRONOUN: 'PRONOUN',
+    DIRECT_SPEECH: 'DIRECT_SPEECH',
 } as const;
 
 export type ClauseType = typeof ClauseType[keyof typeof ClauseType];
@@ -65,6 +67,7 @@ export interface UserProgress {
     tenseScores: Record<TenseType, number>;
     voiceScores: Record<VoiceType, number>;
     wordClassScores: Record<WordClassType, number>;
+    punctuationScores: Record<string, number>;
     masteryScore: number;
     streak: number;
 }
@@ -101,6 +104,9 @@ export const getClauseDisplayName = (type: ClauseType | TenseType | VoiceType | 
         case 'WC_PREPOSITION': return 'Preposition';
         case 'WC_DETERMINER': return 'Determiner';
         case 'WC_INTERJECTION': return 'Interjection';
+
+        // Punctuation
+        case 'DIRECT_SPEECH': return 'Direct Speech';
 
         default: return (type as string).replace(/_/g, ' ');
     }
