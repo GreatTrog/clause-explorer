@@ -24,6 +24,8 @@ const INITIAL_PROGRESS: UserProgress = {
         [ClauseType.CONJUNCTION]: 0,
         [ClauseType.PRONOUN]: 0,
         [ClauseType.DIRECT_SPEECH]: 0,
+        [ClauseType.APOSTROPHE_OMISSION]: 0,
+        [ClauseType.APOSTROPHE_POSSESSION]: 0,
     },
     tenseScores: {
         [TenseType.SIMPLE_PAST]: 0,
@@ -51,6 +53,8 @@ const INITIAL_PROGRESS: UserProgress = {
     },
     punctuationScores: {
         ['DIRECT_SPEECH']: 0,
+        ['APOSTROPHE_OMISSION']: 0,
+        ['APOSTROPHE_POSSESSION']: 0,
     },
     masteryScore: 0,
     streak: 0,

@@ -4,10 +4,11 @@ import { TENSES_CONTENT } from '../../data/tensesCurriculum';
 import { VOICE_CURRICULUM } from '../../data/voiceCurriculum';
 import { WORD_CLASSES_CURRICULUM } from '../../data/wordClassesCurriculum';
 import { PUNCTUATION_CURRICULUM } from '../../data/punctuationCurriculum';
+import { APOSTROPHE_OMISSION_CURRICULUM, APOSTROPHE_POSSESSION_CURRICULUM } from '../../data/apostropheCurriculum';
 import { LearnCard } from './LearnCard';
 import { useGameState } from '../../context/GameStateContext';
 import { ModuleSelector } from '../../components/ModuleSelector';
-import { GrammarModule, WordClassType } from '../../types';
+import { GrammarModule, WordClassType, ClauseType } from '../../types';
 
 interface LearnContainerProps {
   onComplete: () => void;
@@ -16,6 +17,7 @@ interface LearnContainerProps {
 export const LearnContainer: React.FC<LearnContainerProps> = ({ onComplete }) => {
   const [selectedModule, setSelectedModule] = useState<GrammarModule | null>(null);
   const [selectedWordClass, setSelectedWordClass] = useState<WordClassType | null>(null);
+  const [selectedPunctuation, setSelectedPunctuation] = useState<string | null>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
   const { markLearnCompleted } = useGameState();
 
@@ -139,6 +141,46 @@ export const LearnContainer: React.FC<LearnContainerProps> = ({ onComplete }) =>
     );
   }
 
+  // --- PUNCTUATION SUB-MENU ---
+  if (selectedModule === GrammarModule.PUNCTUATION && !selectedPunctuation) {
+    return (
+      <div className="learn-menu">
+        <div className="header-nav" style={{ marginBottom: '1rem', textAlign: 'left' }}>
+          <button className="back-link" onClick={() => setSelectedModule(null)}>← modules</button>
+        </div>
+        <h2>Choose a Punctuation to Learn</h2>
+        <div className="category-grid">
+          <button className="cat-btn word-class" onClick={() => setSelectedPunctuation(ClauseType.DIRECT_SPEECH)}>
+            <div className="icon">💬</div>
+            <h3>Direct Speech</h3>
+            <p>Mastering speech marks</p>
+          </button>
+          <button className="cat-btn word-class" onClick={() => setSelectedPunctuation(ClauseType.APOSTROPHE_OMISSION)}>
+            <div className="icon">✂️</div>
+            <h3>Apostrophes: Omission</h3>
+            <p>Don't, can't, it's...</p>
+          </button>
+          <button className="cat-btn word-class" onClick={() => setSelectedPunctuation(ClauseType.APOSTROPHE_POSSESSION)}>
+            <div className="icon">🏠</div>
+            <h3>Apostrophes: Possession</h3>
+            <p>Sam's, boys', children's...</p>
+          </button>
+        </div>
+        <style>{MENU_STYLES}</style>
+        <style>{`
+                .back-link {
+                    background: none;
+                    border: none;
+                    color: var(--color-primary);
+                    font-weight: bold;
+                    cursor: pointer;
+                    text-decoration: underline;
+                }
+              `}</style>
+      </div>
+    );
+  }
+
   let content = LEARN_CONTENT;
   if (selectedModule === GrammarModule.TENSES) {
     content = TENSES_CONTENT;
@@ -152,7 +194,16 @@ export const LearnContainer: React.FC<LearnContainerProps> = ({ onComplete }) =>
       content = WORD_CLASSES_CURRICULUM;
     }
   } else if (selectedModule === GrammarModule.PUNCTUATION) {
-    content = PUNCTUATION_CURRICULUM;
+    const allPunctuation = [
+      ...PUNCTUATION_CURRICULUM,
+      ...APOSTROPHE_OMISSION_CURRICULUM,
+      ...APOSTROPHE_POSSESSION_CURRICULUM
+    ];
+    if (selectedPunctuation) {
+      content = allPunctuation.filter(page => page.type === selectedPunctuation);
+    } else {
+      content = allPunctuation;
+    }
   }
 
   if (content.length === 0) {
@@ -195,6 +246,13 @@ export const LearnContainer: React.FC<LearnContainerProps> = ({ onComplete }) =>
       return;
     }
 
+    // If in Punctuation and drilled down, go up one level first
+    if (selectedModule === GrammarModule.PUNCTUATION && selectedPunctuation) {
+      setSelectedPunctuation(null);
+      setCurrentIndex(0);
+      return;
+    }
+
     setSelectedModule(null);
     setCurrentIndex(0);
   };
@@ -202,7 +260,7 @@ export const LearnContainer: React.FC<LearnContainerProps> = ({ onComplete }) =>
   return (
     <div className="learn-container">
       <div className="header-nav" style={{ marginBottom: '1rem' }}>
-        <button className="back-link" onClick={handleBackToModules}>← {selectedWordClass ? 'topics' : 'modules'}</button>
+        <button className="back-link" onClick={handleBackToModules}>← {selectedWordClass || selectedPunctuation ? 'topics' : 'modules'}</button>
       </div>
 
       <div className="progress-bar-container">

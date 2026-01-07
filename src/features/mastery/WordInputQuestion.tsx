@@ -25,8 +25,8 @@ export const WordInputQuestion: React.FC<WordInputQuestionProps> = ({ question, 
         if (e) e.preventDefault();
         if (status !== 'IDLE') return;
 
-        const cleanInput = input.trim().toLowerCase();
-        const cleanAnswer = question.correctAnswer.trim().toLowerCase();
+        const cleanInput = input.trim();
+        const cleanAnswer = question.correctAnswer.trim();
 
         if (cleanInput === cleanAnswer) {
             setStatus('CORRECT');

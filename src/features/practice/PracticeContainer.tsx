@@ -4,6 +4,7 @@ import { TENSES_PRACTICE_QUESTIONS } from '../../data/tensesPractice';
 import { VOICE_PRACTICE_QUESTIONS } from '../../data/voicePractice';
 import { WORD_CLASSES_PRACTICE_QUESTIONS } from '../../data/wordClassesPractice';
 import { PUNCTUATION_PRACTICE_QUESTIONS } from '../../data/punctuationPractice';
+import { APOSTROPHE_PRACTICE_QUESTIONS } from '../../data/apostrophePractice';
 import type { Chunk } from '../../data/practiceQuestions';
 import { SentenceHighlighter } from './SentenceHighlighter';
 import { FeedbackOverlay } from './FeedbackOverlay';
@@ -12,6 +13,7 @@ import { ClauseType, GrammarModule, TenseType, VoiceType, WordClassType } from '
 import { ModuleSelector } from '../../components/ModuleSelector';
 import { MultipleChoiceQuestion } from '../../components/MultipleChoiceQuestion';
 import { PunctuationEditor } from './PunctuationEditor';
+import { ContractionEditor } from './ContractionEditor';
 
 // Simple Fisher-Yates shuffle
 function shuffleArray<T>(array: T[]): T[] {
@@ -60,7 +62,11 @@ export const PracticeContainer: React.FC = () => {
     } else if (selectedModule === GrammarModule.WORD_CLASSES && selectedWordClass) {
         questions = WORD_CLASSES_PRACTICE_QUESTIONS.filter(q => q.type === selectedWordClass);
     } else if (selectedModule === GrammarModule.PUNCTUATION && selectedPunctuation) {
-        questions = PUNCTUATION_PRACTICE_QUESTIONS.filter(q => q.type === selectedPunctuation);
+        const allPunctuationQuestions = [
+            ...PUNCTUATION_PRACTICE_QUESTIONS,
+            ...APOSTROPHE_PRACTICE_QUESTIONS
+        ];
+        questions = allPunctuationQuestions.filter(q => q.type === selectedPunctuation);
     }
 
     // 3. Effect Hooks
@@ -82,6 +88,7 @@ export const PracticeContainer: React.FC = () => {
     const isHighlight = currentQuestion && ('chunks' in currentQuestion);
     const isMC = currentQuestion && ('options' in currentQuestion);
     const isEdit = currentQuestion && ('correctSentence' in currentQuestion);
+    const isContraction = currentQuestion && ('sentence' in currentQuestion && 'correctAnswer' in currentQuestion);
 
     // 5. Handlers
     const handleBackToModules = () => {
@@ -162,6 +169,21 @@ export const PracticeContainer: React.FC = () => {
             setFeedback({
                 isCorrect: false,
                 message: `Not quite right. The correct version is:\n\n${displayCorrect}`
+            });
+        }
+    };
+
+    const handleContractionComplete = (isCorrect: boolean) => {
+        setIsAnswered(true);
+        if (isCorrect) {
+            incrementStreak();
+            if (selectedPunctuation) updatePunctuationScore(selectedPunctuation, 10);
+            setFeedback({ isCorrect: true, message: "Great contraction! ✍️" });
+        } else {
+            resetStreak();
+            setFeedback({
+                isCorrect: false,
+                message: `Not quite right. The correct contraction is: ${currentQuestion.correctAnswer}`
             });
         }
     };
@@ -472,6 +494,12 @@ export const PracticeContainer: React.FC = () => {
                     <button className="cat-btn main" onClick={() => setSelectedPunctuation(ClauseType.DIRECT_SPEECH)}>
                         <div className="icon">💬</div><h3>Direct Speech</h3><p>How to use speech marks!</p>
                     </button>
+                    <button className="cat-btn main" onClick={() => setSelectedPunctuation(ClauseType.APOSTROPHE_OMISSION)}>
+                        <div className="icon">✂️</div><h3>Apostrophes: Omission</h3><p>Don't, can't, it's...</p>
+                    </button>
+                    <button className="cat-btn main" onClick={() => setSelectedPunctuation(ClauseType.APOSTROPHE_POSSESSION)}>
+                        <div className="icon">🏠</div><h3>Apostrophes: Possession</h3><p>Sam's, boys', children's...</p>
+                    </button>
                 </div>
                 <style>{PRACTICE_STYLES}</style>
             </div>
@@ -522,6 +550,16 @@ export const PracticeContainer: React.FC = () => {
                     originalText={currentQuestion.text!}
                     correctSentence={currentQuestion.correctSentence!}
                     onComplete={handleEditComplete}
+                    isAnswered={isAnswered}
+                />
+            )}
+
+            {isContraction && (
+                <ContractionEditor
+                    key={currentIndex}
+                    sentence={currentQuestion.sentence!}
+                    correctAnswer={currentQuestion.correctAnswer!}
+                    onComplete={handleContractionComplete}
                     isAnswered={isAnswered}
                 />
             )}

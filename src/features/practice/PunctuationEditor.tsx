@@ -37,9 +37,26 @@ export const PunctuationEditor: React.FC<PunctuationEditorProps> = ({ originalTe
 
     // Safety: Check if words were changed
     const wordsChanged = () => {
-        const userWords = userInput.replace(/[^\w\s]/g, '').toLowerCase().split(/\s+/).filter(Boolean).join(' ');
-        const originalWords = originalText.replace(/[^\w\s]/g, '').toLowerCase().split(/\s+/).filter(Boolean).join(' ');
-        return userWords !== originalWords;
+        const normalize = (t: string) => t.toLowerCase().replace(/[^\w\s]/g, '');
+        const userWords = userInput.split(/\s+/).filter(Boolean);
+        const originalWords = originalText.split(/\s+/).filter(Boolean);
+
+        if (userWords.length !== originalWords.length) return true;
+
+        for (let i = 0; i < userWords.length; i++) {
+            const u = normalize(userWords[i]);
+            const o = normalize(originalWords[i]);
+
+            if (u !== o) {
+                // Allow adding an 's' if it follows an apostrophe (possessive)
+                // e.g., teacher -> teacher's
+                if (u === o + 's' && userWords[i].includes("'")) {
+                    continue;
+                }
+                return true;
+            }
+        }
+        return false;
     };
 
     return (

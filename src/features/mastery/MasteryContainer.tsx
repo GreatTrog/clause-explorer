@@ -5,16 +5,19 @@ import { TENSES_MASTERY_QUESTIONS } from '../../data/tensesMastery';
 import { VOICE_MASTERY_QUESTIONS } from '../../data/voiceMastery';
 import { WORD_CLASSES_MASTERY_QUESTIONS } from '../../data/wordClassesMastery';
 import { PUNCTUATION_MASTERY_QUESTIONS } from '../../data/punctuationMastery';
+import { APOSTROPHE_OMISSION_MASTERY_QUESTIONS, APOSTROPHE_POSSESSION_MASTERY_QUESTIONS } from '../../data/apostropheMastery';
 import { DragDropZone } from './DragDropZone';
 import { SentenceCompleter } from './SentenceCompleter';
 import { TableClassifier } from './TableClassifier';
 import { WordInputQuestion } from './WordInputQuestion';
+import { MultiSelectSentence } from './MultiSelectSentence';
 import { PunctuationEditor } from '../practice/PunctuationEditor';
+import { ContractionEditor } from '../practice/ContractionEditor';
 import { SentenceHighlighter } from '../practice/SentenceHighlighter';
 import { FeedbackOverlay } from '../practice/FeedbackOverlay';
 import { useGameState } from '../../context/GameStateContext';
 import { ModuleSelector } from '../../components/ModuleSelector';
-import { GrammarModule } from '../../types';
+import { GrammarModule, ClauseType } from '../../types';
 
 // Simple Fisher-Yates shuffle
 function shuffleArray<T>(array: T[]): T[] {
@@ -28,6 +31,7 @@ function shuffleArray<T>(array: T[]): T[] {
 
 export const MasteryContainer: React.FC = () => {
     const [selectedModule, setSelectedModule] = useState<GrammarModule | null>(null);
+    const [selectedPunctuation, setSelectedPunctuation] = useState<string | null>(null);
     // Store shuffled questions in state so order persists during render
     const [questions, setQuestions] = useState<MasteryQuestion[]>([]);
     const [currentIndex, setCurrentIndex] = useState(0);
@@ -48,16 +52,108 @@ export const MasteryContainer: React.FC = () => {
         } else if (selectedModule === GrammarModule.WORD_CLASSES) {
             setQuestions(shuffleArray(WORD_CLASSES_MASTERY_QUESTIONS));
             setCurrentIndex(0);
-        } else if (selectedModule === GrammarModule.PUNCTUATION) {
-            setQuestions(shuffleArray(PUNCTUATION_MASTERY_QUESTIONS));
+        } else if (selectedModule === GrammarModule.PUNCTUATION && selectedPunctuation) {
+            let qSet: MasteryQuestion[] = [];
+            if (selectedPunctuation === ClauseType.DIRECT_SPEECH) {
+                qSet = PUNCTUATION_MASTERY_QUESTIONS;
+            } else if (selectedPunctuation === ClauseType.APOSTROPHE_OMISSION) {
+                qSet = APOSTROPHE_OMISSION_MASTERY_QUESTIONS;
+            } else if (selectedPunctuation === ClauseType.APOSTROPHE_POSSESSION) {
+                qSet = APOSTROPHE_POSSESSION_MASTERY_QUESTIONS;
+            }
+            setQuestions(shuffleArray(qSet));
             setCurrentIndex(0);
         }
-    }, [selectedModule]);
+    }, [selectedModule, selectedPunctuation]);
 
     if (!selectedModule) {
         return (
             <div className="mastery-container">
                 <ModuleSelector onSelect={setSelectedModule} />
+            </div>
+        );
+    }
+
+    if (selectedModule === GrammarModule.PUNCTUATION && !selectedPunctuation) {
+        return (
+            <div className="mastery-container">
+                <div className="header-nav" style={{ marginBottom: '1rem', textAlign: 'left' }}>
+                    <button onClick={() => setSelectedModule(null)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--color-primary)', textDecoration: 'underline', fontWeight: 'bold' }}>← modules</button>
+                </div>
+                <div className="instruction-card" style={{ textAlign: 'center' }}>
+                    <div className="mascot-badge">🏆</div>
+                    <h2 style={{ color: 'var(--color-accent)' }}>Choose Punctuation Mastery</h2>
+                </div>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1.5rem' }}>
+                    <button
+                        className="cat-btn"
+                        onClick={() => setSelectedPunctuation(ClauseType.DIRECT_SPEECH)}
+                        style={{
+                            padding: '1rem',
+                            minHeight: '120px',
+                            borderRadius: 'var(--radius-lg)',
+                            border: '1px solid #e5e7eb',
+                            cursor: 'pointer',
+                            background: '#ffffff',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            gap: '0.5rem',
+                            boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
+                        }}
+                    >
+                        <div style={{ fontSize: '2.5rem' }}>💬</div>
+                        <h3 style={{ margin: 0, color: 'var(--color-accent)' }}>Direct Speech</h3>
+                        <p style={{ margin: 0, color: '#6b7280' }}>Master speech marks!</p>
+                    </button>
+
+                    <button
+                        className="cat-btn"
+                        onClick={() => setSelectedPunctuation(ClauseType.APOSTROPHE_OMISSION)}
+                        style={{
+                            padding: '1rem',
+                            minHeight: '120px',
+                            borderRadius: 'var(--radius-lg)',
+                            border: '1px solid #e5e7eb',
+                            cursor: 'pointer',
+                            background: '#ffffff',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            gap: '0.5rem',
+                            boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
+                        }}
+                    >
+                        <div style={{ fontSize: '2.5rem' }}>✂️</div>
+                        <h3 style={{ margin: 0, color: 'var(--color-accent)' }}>Apostrophes: Omission</h3>
+                        <p style={{ margin: 0, color: '#6b7280' }}>Master contractions!</p>
+                    </button>
+
+                    <button
+                        className="cat-btn"
+                        onClick={() => setSelectedPunctuation(ClauseType.APOSTROPHE_POSSESSION)}
+                        style={{
+                            padding: '1rem',
+                            minHeight: '120px',
+                            borderRadius: 'var(--radius-lg)',
+                            border: '1px solid #e5e7eb',
+                            cursor: 'pointer',
+                            background: '#ffffff',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            gap: '0.5rem',
+                            boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
+                        }}
+                    >
+                        <div style={{ fontSize: '2.5rem' }}>🏠</div>
+                        <h3 style={{ margin: 0, color: 'var(--color-accent)' }}>Apostrophes: Possession</h3>
+                        <p style={{ margin: 0, color: '#6b7280' }}>Master ownership!</p>
+                    </button>
+                </div>
             </div>
         );
     }
@@ -121,7 +217,7 @@ export const MasteryContainer: React.FC = () => {
     return (
         <div className="mastery-container">
             <div className="header-info" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <button className="back-link" onClick={() => setSelectedModule(null)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--color-primary)', textDecoration: 'underline' }}>← modules</button>
+                <button className="back-link" onClick={() => selectedModule === GrammarModule.PUNCTUATION ? setSelectedPunctuation(null) : setSelectedModule(null)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--color-primary)', textDecoration: 'underline' }}>← {selectedPunctuation ? 'types' : 'modules'}</button>
                 <span className="question-counter">Challenge {currentIndex + 1} / {questions.length}</span>
             </div>
 
@@ -137,6 +233,14 @@ export const MasteryContainer: React.FC = () => {
                         selectedChunkId={null}
                         isAnswered={!!feedback}
                         onSelect={(chunk) => handleQuestionComplete(chunk.isCorrect)}
+                    />
+                )}
+
+                {currentQuestion.type === MasteryQuestionType.MULTI_SELECT && (
+                    <MultiSelectSentence
+                        chunks={currentQuestion.chunks}
+                        onComplete={handleQuestionComplete}
+                        isAnswered={!!feedback}
                     />
                 )}
 
@@ -174,6 +278,16 @@ export const MasteryContainer: React.FC = () => {
                         key={currentQuestion.id}
                         originalText={currentQuestion.originalText}
                         correctSentence={currentQuestion.correctSentence}
+                        onComplete={handleQuestionComplete}
+                        isAnswered={!!feedback}
+                    />
+                )}
+
+                {currentQuestion.type === MasteryQuestionType.CONTRACTION_EDIT && (
+                    <ContractionEditor
+                        key={currentQuestion.id}
+                        sentence={currentQuestion.sentence}
+                        correctAnswer={currentQuestion.correctAnswer}
                         onComplete={handleQuestionComplete}
                         isAnswered={!!feedback}
                     />

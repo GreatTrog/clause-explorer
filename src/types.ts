@@ -24,6 +24,8 @@ export const ClauseType = {
     CONJUNCTION: 'CONJUNCTION',
     PRONOUN: 'PRONOUN',
     DIRECT_SPEECH: 'DIRECT_SPEECH',
+    APOSTROPHE_OMISSION: 'APOSTROPHE_OMISSION',
+    APOSTROPHE_POSSESSION: 'APOSTROPHE_POSSESSION',
 } as const;
 
 export type ClauseType = typeof ClauseType[keyof typeof ClauseType];
@@ -107,6 +109,8 @@ export const getClauseDisplayName = (type: ClauseType | TenseType | VoiceType | 
 
         // Punctuation
         case 'DIRECT_SPEECH': return 'Direct Speech';
+        case 'APOSTROPHE_OMISSION': return 'Apostrophes for Omission';
+        case 'APOSTROPHE_POSSESSION': return 'Apostrophes for Possession';
 
         default: return (type as string).replace(/_/g, ' ');
     }

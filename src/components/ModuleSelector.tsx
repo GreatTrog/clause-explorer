@@ -52,7 +52,7 @@ export const ModuleSelector: React.FC<ModuleSelectorProps> = ({ onSelect }) => {
                 >
                     <div className="icon">💬</div>
                     <h3>Punctuation</h3>
-                    <p>Direct speech & marks!</p>
+                    <p>Speech marks, commas & more!</p>
                 </button>
             </div>
 

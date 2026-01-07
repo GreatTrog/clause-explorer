@@ -7,6 +7,8 @@ export const MasteryQuestionType = {
     TABLE: 'TABLE',
     TEXT_INPUT: 'TEXT_INPUT',
     PUNCTUATION_EDIT: 'PUNCTUATION_EDIT',
+    CONTRACTION_EDIT: 'CONTRACTION_EDIT',
+    MULTI_SELECT: 'MULTI_SELECT',
 } as const;
 
 export type MasteryQuestionType = typeof MasteryQuestionType[keyof typeof MasteryQuestionType];
@@ -18,6 +20,13 @@ export interface SelectQuestion {
     type: typeof MasteryQuestionType.SELECT;
     id: string;
     clauseType: GrammarCategory; // Used for "Find the X", fits both Clause and Tense
+    instructions: string;
+    chunks: { id: string; text: string; isCorrect: boolean }[];
+}
+
+export interface MultiSelectQuestion {
+    type: typeof MasteryQuestionType.MULTI_SELECT;
+    id: string;
     instructions: string;
     chunks: { id: string; text: string; isCorrect: boolean }[];
 }
@@ -63,6 +72,14 @@ export interface PunctuationEditQuestion {
     correctSentence: string | string[];
 }
 
+export interface ContractionEditQuestion {
+    type: typeof MasteryQuestionType.CONTRACTION_EDIT;
+    id: string;
+    instructions: string;
+    sentence: string;
+    correctAnswer: string | string[];
+}
+
 export interface TableRow {
     id: string;
     text: string;
@@ -77,7 +94,7 @@ export interface TableQuestion {
     rows: TableRow[];
 }
 
-export type MasteryQuestion = SelectQuestion | DragDropQuestion | CompleteQuestion | TableQuestion | TextInputQuestion | PunctuationEditQuestion;
+export type MasteryQuestion = SelectQuestion | DragDropQuestion | CompleteQuestion | TableQuestion | TextInputQuestion | PunctuationEditQuestion | ContractionEditQuestion | MultiSelectQuestion;
 
 export const MASTERY_QUESTIONS: MasteryQuestion[] = [
     // --- DRAG AND DROP (Sorting) ---
