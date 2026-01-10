@@ -5,6 +5,7 @@ import { VOICE_CURRICULUM } from '../../data/voiceCurriculum';
 import { WORD_CLASSES_CURRICULUM } from '../../data/wordClassesCurriculum';
 import { PUNCTUATION_CURRICULUM } from '../../data/punctuationCurriculum';
 import { APOSTROPHE_OMISSION_CURRICULUM, APOSTROPHE_POSSESSION_CURRICULUM } from '../../data/apostropheCurriculum';
+import { CLAUSE_BOUNDARY_CURRICULUM } from '../../data/clauseBoundaryCurriculum';
 import { LearnCard } from './LearnCard';
 import { useGameState } from '../../context/GameStateContext';
 import { ModuleSelector } from '../../components/ModuleSelector';
@@ -165,6 +166,11 @@ export const LearnContainer: React.FC<LearnContainerProps> = ({ onComplete }) =>
             <h3>Apostrophes: Possession</h3>
             <p>Sam's, boys', children's...</p>
           </button>
+          <button className="cat-btn word-class" onClick={() => setSelectedPunctuation(ClauseType.CLAUSE_BOUNDARIES)}>
+            <div className="icon">⚖️</div>
+            <h3>Clause Boundaries</h3>
+            <p>Semi-colons, colons & dashes</p>
+          </button>
         </div>
         <style>{MENU_STYLES}</style>
         <style>{`
@@ -197,7 +203,8 @@ export const LearnContainer: React.FC<LearnContainerProps> = ({ onComplete }) =>
     const allPunctuation = [
       ...PUNCTUATION_CURRICULUM,
       ...APOSTROPHE_OMISSION_CURRICULUM,
-      ...APOSTROPHE_POSSESSION_CURRICULUM
+      ...APOSTROPHE_POSSESSION_CURRICULUM,
+      ...CLAUSE_BOUNDARY_CURRICULUM
     ];
     if (selectedPunctuation) {
       content = allPunctuation.filter(page => page.type === selectedPunctuation);

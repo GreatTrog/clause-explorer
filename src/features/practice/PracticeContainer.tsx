@@ -5,6 +5,7 @@ import { VOICE_PRACTICE_QUESTIONS } from '../../data/voicePractice';
 import { WORD_CLASSES_PRACTICE_QUESTIONS } from '../../data/wordClassesPractice';
 import { PUNCTUATION_PRACTICE_QUESTIONS } from '../../data/punctuationPractice';
 import { APOSTROPHE_PRACTICE_QUESTIONS } from '../../data/apostrophePractice';
+import { CLAUSE_BOUNDARY_PRACTICE_QUESTIONS } from '../../data/clauseBoundaryPractice';
 import type { Chunk } from '../../data/practiceQuestions';
 import { SentenceHighlighter } from './SentenceHighlighter';
 import { FeedbackOverlay } from './FeedbackOverlay';
@@ -64,7 +65,8 @@ export const PracticeContainer: React.FC = () => {
     } else if (selectedModule === GrammarModule.PUNCTUATION && selectedPunctuation) {
         const allPunctuationQuestions = [
             ...PUNCTUATION_PRACTICE_QUESTIONS,
-            ...APOSTROPHE_PRACTICE_QUESTIONS
+            ...APOSTROPHE_PRACTICE_QUESTIONS,
+            ...CLAUSE_BOUNDARY_PRACTICE_QUESTIONS
         ];
         questions = allPunctuationQuestions.filter(q => q.type === selectedPunctuation);
     }
@@ -500,6 +502,9 @@ export const PracticeContainer: React.FC = () => {
                     <button className="cat-btn main" onClick={() => setSelectedPunctuation(ClauseType.APOSTROPHE_POSSESSION)}>
                         <div className="icon">🏠</div><h3>Apostrophes: Possession</h3><p>Sam's, boys', children's...</p>
                     </button>
+                    <button className="cat-btn main" onClick={() => setSelectedPunctuation(ClauseType.CLAUSE_BOUNDARIES)}>
+                        <div className="icon">⚖️</div><h3>Clause Boundaries</h3><p>Semi-colons, colons & dashes</p>
+                    </button>
                 </div>
                 <style>{PRACTICE_STYLES}</style>
             </div>
@@ -519,7 +524,7 @@ export const PracticeContainer: React.FC = () => {
             </div>
 
             <div className="instruction-card">
-                <h2>{currentQuestion.instructions || currentQuestion.text || currentQuestion.question}</h2>
+                <h2>{currentQuestion.instructions || (isMC ? "Choose the correct option" : (currentQuestion.text || currentQuestion.question))}</h2>
                 <div className="mascot-helper">🦉</div>
             </div>
 
@@ -536,7 +541,7 @@ export const PracticeContainer: React.FC = () => {
             {isMC && (
                 <MultipleChoiceQuestion
                     key={currentIndex}
-                    question=""
+                    question={currentQuestion.question || ""}
                     options={currentQuestion.options!}
                     selectedOptionId={selectedOptionId}
                     isAnswered={isAnswered}

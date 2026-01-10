@@ -14,6 +14,7 @@ export interface PracticeQuestion {
     hint: string;
     chunks?: Chunk[]; // Optional for Highlight questions
     options?: { id: string; text: string; isCorrect: boolean }[]; // Optional for MC questions
+    correctSentence?: string | string[]; // For PunctuationEditor
     explanation?: string; // Explanation for answer
     question?: string; // Text for MC questions
 }

@@ -21,6 +21,7 @@ export interface SelectQuestion {
     id: string;
     clauseType: GrammarCategory; // Used for "Find the X", fits both Clause and Tense
     instructions: string;
+    question?: string;
     chunks: { id: string; text: string; isCorrect: boolean }[];
 }
 
@@ -28,6 +29,7 @@ export interface MultiSelectQuestion {
     type: typeof MasteryQuestionType.MULTI_SELECT;
     id: string;
     instructions: string;
+    question?: string;
     chunks: { id: string; text: string; isCorrect: boolean }[];
 }
 
@@ -41,6 +43,7 @@ export interface DragDropQuestion {
     type: typeof MasteryQuestionType.DRAG_DROP;
     id: string;
     instructions: string;
+    question?: string;
     items: DragDropItem[];
     zones: GrammarCategory[];
 }
@@ -49,6 +52,7 @@ export interface CompleteQuestion {
     type: typeof MasteryQuestionType.COMPLETE;
     id: string;
     instructions: string;
+    question?: string;
     sentenceBefore: string;
     sentenceAfter: string;
     options: { id: string; text: string; isCorrect: boolean }[];
@@ -58,6 +62,7 @@ export interface TextInputQuestion {
     type: typeof MasteryQuestionType.TEXT_INPUT;
     id: string;
     instructions: string;
+    question?: string;
     sentenceBefore: string;
     sentenceAfter: string;
     correctAnswer: string;
@@ -68,6 +73,7 @@ export interface PunctuationEditQuestion {
     type: typeof MasteryQuestionType.PUNCTUATION_EDIT;
     id: string;
     instructions: string;
+    question?: string;
     originalText: string;
     correctSentence: string | string[];
 }
@@ -76,6 +82,7 @@ export interface ContractionEditQuestion {
     type: typeof MasteryQuestionType.CONTRACTION_EDIT;
     id: string;
     instructions: string;
+    question?: string;
     sentence: string;
     correctAnswer: string | string[];
 }
@@ -90,6 +97,7 @@ export interface TableQuestion {
     type: typeof MasteryQuestionType.TABLE;
     id: string;
     instructions: string;
+    question?: string;
     columns: GrammarCategory[];
     rows: TableRow[];
 }

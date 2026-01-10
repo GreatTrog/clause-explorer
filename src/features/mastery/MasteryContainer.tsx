@@ -6,6 +6,7 @@ import { VOICE_MASTERY_QUESTIONS } from '../../data/voiceMastery';
 import { WORD_CLASSES_MASTERY_QUESTIONS } from '../../data/wordClassesMastery';
 import { PUNCTUATION_MASTERY_QUESTIONS } from '../../data/punctuationMastery';
 import { APOSTROPHE_OMISSION_MASTERY_QUESTIONS, APOSTROPHE_POSSESSION_MASTERY_QUESTIONS } from '../../data/apostropheMastery';
+import { CLAUSE_BOUNDARY_MASTERY_QUESTIONS } from '../../data/clauseBoundaryMastery';
 import { DragDropZone } from './DragDropZone';
 import { SentenceCompleter } from './SentenceCompleter';
 import { TableClassifier } from './TableClassifier';
@@ -36,6 +37,7 @@ export const MasteryContainer: React.FC = () => {
     const [questions, setQuestions] = useState<MasteryQuestion[]>([]);
     const [currentIndex, setCurrentIndex] = useState(0);
     const [feedback, setFeedback] = useState<{ isCorrect: boolean; message: string } | null>(null);
+    const [attempts, setAttempts] = useState(0); // Used to force re-mount on 'Try Again'
     const { updateMasteryScore, incrementStreak, resetStreak } = useGameState();
 
     // Initialize questions on module selection
@@ -60,6 +62,8 @@ export const MasteryContainer: React.FC = () => {
                 qSet = APOSTROPHE_OMISSION_MASTERY_QUESTIONS;
             } else if (selectedPunctuation === ClauseType.APOSTROPHE_POSSESSION) {
                 qSet = APOSTROPHE_POSSESSION_MASTERY_QUESTIONS;
+            } else if (selectedPunctuation === ClauseType.CLAUSE_BOUNDARIES) {
+                qSet = CLAUSE_BOUNDARY_MASTERY_QUESTIONS;
             }
             setQuestions(shuffleArray(qSet));
             setCurrentIndex(0);
@@ -153,6 +157,29 @@ export const MasteryContainer: React.FC = () => {
                         <h3 style={{ margin: 0, color: 'var(--color-accent)' }}>Apostrophes: Possession</h3>
                         <p style={{ margin: 0, color: '#6b7280' }}>Master ownership!</p>
                     </button>
+
+                    <button
+                        className="cat-btn"
+                        onClick={() => setSelectedPunctuation(ClauseType.CLAUSE_BOUNDARIES)}
+                        style={{
+                            padding: '1rem',
+                            minHeight: '120px',
+                            borderRadius: 'var(--radius-lg)',
+                            border: '1px solid #e5e7eb',
+                            cursor: 'pointer',
+                            background: '#ffffff',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            gap: '0.5rem',
+                            boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
+                        }}
+                    >
+                        <div style={{ fontSize: '2.5rem' }}>⚖️</div>
+                        <h3 style={{ margin: 0, color: 'var(--color-accent)' }}>Clause Boundaries</h3>
+                        <p style={{ margin: 0, color: '#6b7280' }}>Master semi-colons, colons & dashes!</p>
+                    </button>
                 </div>
             </div>
         );
@@ -199,8 +226,9 @@ export const MasteryContainer: React.FC = () => {
     };
 
     const handleTryAgain = () => {
-        // Reset feedback to try again (if applicable)
+        // Reset feedback to try again
         setFeedback(null);
+        setAttempts(prev => prev + 1); // Incrementing forces child re-mount via key
     };
 
     if (isFinished) {
@@ -224,9 +252,26 @@ export const MasteryContainer: React.FC = () => {
             <div className="instruction-card">
                 <div className="mascot-badge">🏆</div>
                 <h2>{currentQuestion.instructions}</h2>
+                {currentQuestion.question && (
+                    <div className="question-prompt" style={{
+                        marginTop: '1.5rem',
+                        padding: '1.5rem',
+                        background: 'white',
+                        borderRadius: 'var(--radius-lg)',
+                        boxShadow: '0 2px 4px rgba(0,0,0,0.05)',
+                        fontSize: '1.25rem',
+                        fontWeight: '500',
+                        color: 'var(--color-primary)',
+                        border: '1px solid #e5e7eb',
+                        maxWidth: '600px',
+                        marginInline: 'auto'
+                    }}>
+                        {currentQuestion.question}
+                    </div>
+                )}
             </div>
 
-            <div className="game-area" key={currentQuestion.id}>
+            <div className="game-area" key={`${currentQuestion.id}-${attempts}`}>
                 {currentQuestion.type === MasteryQuestionType.SELECT && (
                     <SentenceHighlighter
                         chunks={currentQuestion.chunks}

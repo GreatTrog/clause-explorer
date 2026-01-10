@@ -26,6 +26,7 @@ const INITIAL_PROGRESS: UserProgress = {
         [ClauseType.DIRECT_SPEECH]: 0,
         [ClauseType.APOSTROPHE_OMISSION]: 0,
         [ClauseType.APOSTROPHE_POSSESSION]: 0,
+        [ClauseType.CLAUSE_BOUNDARIES]: 0,
     },
     tenseScores: {
         [TenseType.SIMPLE_PAST]: 0,

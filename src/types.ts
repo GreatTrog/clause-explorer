@@ -26,6 +26,7 @@ export const ClauseType = {
     DIRECT_SPEECH: 'DIRECT_SPEECH',
     APOSTROPHE_OMISSION: 'APOSTROPHE_OMISSION',
     APOSTROPHE_POSSESSION: 'APOSTROPHE_POSSESSION',
+    CLAUSE_BOUNDARIES: 'CLAUSE_BOUNDARIES',
 } as const;
 
 export type ClauseType = typeof ClauseType[keyof typeof ClauseType];
@@ -111,6 +112,7 @@ export const getClauseDisplayName = (type: ClauseType | TenseType | VoiceType | 
         case 'DIRECT_SPEECH': return 'Direct Speech';
         case 'APOSTROPHE_OMISSION': return 'Apostrophes for Omission';
         case 'APOSTROPHE_POSSESSION': return 'Apostrophes for Possession';
+        case 'CLAUSE_BOUNDARIES': return 'Semicolons, Colons and Dashes';
 
         default: return (type as string).replace(/_/g, ' ');
     }

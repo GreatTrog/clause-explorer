@@ -25,10 +25,17 @@ export const PunctuationEditor: React.FC<PunctuationEditorProps> = ({ originalTe
     }, [originalText, isAnswered]);
 
     const handleSubmit = () => {
-        const cleanUser = userInput.trim();
+        const normalizePunctuation = (text: string) => {
+            return text
+                .replace(/[—–]/g, '-') // Normalize dashes to hyphens
+                .replace(/\s*([;:\-])\s*/g, '$1') // Remove spaces around ; : -
+                .trim();
+        };
+
+        const cleanUser = normalizePunctuation(userInput);
         const correctAnswers = Array.isArray(correctSentence) ? correctSentence : [correctSentence];
 
-        const isCorrect = correctAnswers.some(ans => cleanUser === ans.trim());
+        const isCorrect = correctAnswers.some(ans => cleanUser === normalizePunctuation(ans));
 
         setIsCorrect(isCorrect);
         setIsSubmitted(true);
@@ -37,9 +44,11 @@ export const PunctuationEditor: React.FC<PunctuationEditorProps> = ({ originalTe
 
     // Safety: Check if words were changed
     const wordsChanged = () => {
-        const normalize = (t: string) => t.toLowerCase().replace(/[^\w\s]/g, '');
-        const userWords = userInput.split(/\s+/).filter(Boolean);
-        const originalWords = originalText.split(/\s+/).filter(Boolean);
+        const normalize = (t: string) => t.toLowerCase().replace(/[^\w]/g, '');
+
+        // Filter out segments that contain no word characters (like standalone dashes/punctuation)
+        const userWords = userInput.split(/\s+/).filter(w => normalize(w).length > 0);
+        const originalWords = originalText.split(/\s+/).filter(w => normalize(w).length > 0);
 
         if (userWords.length !== originalWords.length) return true;
 
@@ -48,8 +57,7 @@ export const PunctuationEditor: React.FC<PunctuationEditorProps> = ({ originalTe
             const o = normalize(originalWords[i]);
 
             if (u !== o) {
-                // Allow adding an 's' if it follows an apostrophe (possessive)
-                // e.g., teacher -> teacher's
+                // Allow adding an 's' if it follows an apostrophe
                 if (u === o + 's' && userWords[i].includes("'")) {
                     continue;
                 }
@@ -62,7 +70,7 @@ export const PunctuationEditor: React.FC<PunctuationEditorProps> = ({ originalTe
     return (
         <div className="punctuation-editor">
             <div className="editor-card">
-                <p className="instruction-mini">Edit the sentence below to add correct punctuation:</p>
+                <p className="instruction-mini">Edit the sentence below to use correct punctuation:</p>
                 <textarea
                     ref={textareaRef}
                     value={userInput}
@@ -73,7 +81,7 @@ export const PunctuationEditor: React.FC<PunctuationEditorProps> = ({ originalTe
                 />
 
                 {wordsChanged() && (
-                    <p className="warning-text">⚠️ It looks like you changed some words! Try to only add punctuation.</p>
+                    <p className="warning-text">⚠️ It looks like you changed some words! Only change the punctuation.</p>
                 )}
 
                 {!isSubmitted && (
