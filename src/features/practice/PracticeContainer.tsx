@@ -524,7 +524,7 @@ export const PracticeContainer: React.FC = () => {
             </div>
 
             <div className="instruction-card">
-                <h2>{currentQuestion.instructions || (isMC ? "Choose the correct option" : (currentQuestion.text || currentQuestion.question))}</h2>
+                <h2>{currentQuestion.instructions || (isMC ? "Choose the correct option" : (currentQuestion.text || currentQuestion.question || "Find the answer"))}</h2>
                 <div className="mascot-helper">🦉</div>
             </div>
 
@@ -541,7 +541,7 @@ export const PracticeContainer: React.FC = () => {
             {isMC && (
                 <MultipleChoiceQuestion
                     key={currentIndex}
-                    question={currentQuestion.question || ""}
+                    question={currentQuestion.question || currentQuestion.text || ""}
                     options={currentQuestion.options!}
                     selectedOptionId={selectedOptionId}
                     isAnswered={isAnswered}
