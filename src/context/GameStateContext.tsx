@@ -65,7 +65,7 @@ const GameStateContext = createContext<GameStateContextType | undefined>(undefin
 
 export const GameStateProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const [progress, setProgress] = useState<UserProgress>(() => {
-        const saved = localStorage.getItem('clause-explorer-progress');
+        const saved = localStorage.getItem('grammar-explorer-progress') || localStorage.getItem('clause-explorer-progress');
         // Handle migration if needed by merging with INITIAL_PROGRESS
         const parsed = saved ? JSON.parse(saved) : INITIAL_PROGRESS;
 
@@ -89,7 +89,7 @@ export const GameStateProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     });
 
     useEffect(() => {
-        localStorage.setItem('clause-explorer-progress', JSON.stringify(progress));
+        localStorage.setItem('grammar-explorer-progress', JSON.stringify(progress));
     }, [progress]);
 
     const updatePracticeScore = (type: ClauseType, score: number) => {
