@@ -41,6 +41,22 @@ export const ModeSelection: React.FC<ModeSelectionProps> = ({ onSelectMode }) =>
         </button>
       </div>
 
+      <div className="badge-container">
+        <a
+          href="https://learningarcade.uk"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="badge-link"
+          aria-label="Visit Learning Arcade"
+        >
+          <img
+            src="/learning-arcade-badge-light.png"
+            alt="Learning Arcade"
+            className="badge-img"
+          />
+        </a>
+      </div>
+
       <style>{`
         .home-screen {
           text-align: center;
@@ -106,6 +122,36 @@ export const ModeSelection: React.FC<ModeSelectionProps> = ({ onSelectMode }) =>
         .learn { background-color: var(--color-primary); }
         .practice { background-color: var(--color-secondary); }
         .mastery { background-color: var(--color-accent); }
+
+        .badge-container {
+          margin-top: 3.5rem;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
+
+        .badge-link {
+          display: inline-block;
+          border-radius: var(--radius-md);
+          overflow: hidden;
+          transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s ease;
+          box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        .badge-link:hover {
+          transform: translateY(-4px) scale(1.02);
+          box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
+        }
+
+        .badge-link:active {
+          transform: translateY(-1px) scale(0.98);
+        }
+
+        .badge-img {
+          width: 200px;
+          height: auto;
+          display: block;
+        }
 
         @keyframes bounce {
           0%, 100% { transform: translateY(0); }
