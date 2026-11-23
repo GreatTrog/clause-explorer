@@ -21,7 +21,7 @@ export const ModeSelection: React.FC<ModeSelectionProps> = ({ onSelectMode }) =>
           onClick={() => onSelectMode(AppMode.LEARN)}
         >
           <h2>🎓 Learn</h2>
-          <p>Discover Main, Subordinate, and Relative clauses.</p>
+          <p>Explore clauses, conjunctions, verb tenses, active and passive voice, word classes and punctuation with clear examples.</p>
         </button>
 
         <button
