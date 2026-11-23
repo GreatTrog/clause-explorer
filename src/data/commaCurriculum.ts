@@ -1,0 +1,68 @@
+import { ClauseType } from '../types';
+import type { LearnPage } from './curriculum';
+
+export const COMMA_CURRICULUM: LearnPage[] = [
+    {
+        id: 'commas-learn-list',
+        type: ClauseType.COMMAS,
+        title: 'Separating Items in a List',
+        definition: 'Use commas to separate three or more items in a list. In a simple list, **and** or **or** usually joins the last two items without a comma.',
+        mascotDialogue: 'Count the four materials. The first two gaps take commas and the last gap takes **and**.',
+        exampleSentence: 'We need card, string, glue and paint.',
+        highlightedText: ',',
+    },
+    {
+        id: 'commas-learn-list-phrases',
+        type: ClauseType.COMMAS,
+        title: 'Listing Phrases and Actions',
+        definition: 'A list item can be a group of words. Put each comma at the end of a complete item, keeping the words in that item together.',
+        mascotDialogue: 'Find the three jobs. Each one starts with an action word.',
+        exampleSentence: 'We swept the steps, washed the windows and watered the pots.',
+        highlightedText: ['swept the steps', 'washed the windows', 'watered the pots'],
+    },
+    {
+        id: 'commas-learn-fronted',
+        type: ClauseType.COMMAS,
+        title: 'Commas After Fronted Adverbials',
+        definition: 'A **fronted adverbial** comes at the start of a sentence and can tell us when, where or how something happens. Put a comma after the whole fronted adverbial.',
+        mascotDialogue: '**At the far end of the pier** tells us where the seal appeared. The comma goes after **pier**.',
+        exampleSentence: 'At the far end of the pier, a seal appeared.',
+        highlightedText: 'At the far end of the pier,',
+    },
+    {
+        id: 'commas-learn-fronted-clause',
+        type: ClauseType.COMMAS,
+        title: 'Finding the End of the Opening Clause',
+        definition: 'A fronted adverbial can be a whole clause. Read the opening clause and place the comma just before the main clause begins.',
+        mascotDialogue: 'The whole opening tells us when the market opened. The main clause starts with **the market**.',
+        exampleSentence: 'When the clock struck nine, the market opened.',
+        highlightedText: 'When the clock struck nine,',
+    },
+    {
+        id: 'commas-learn-clarity-list',
+        type: ClauseType.COMMAS,
+        title: 'Using a Comma to Make a List Clear',
+        definition: '**Ambiguity** means a sentence can be understood in more than one way. A comma can show that two words name separate items.',
+        mascotDialogue: 'On the first line, **cheese sandwiches** are one item. On the second line, **cheese** and **sandwiches** are separate items.',
+        exampleSentence: 'We served cheese sandwiches and crisps.\nWe served cheese, sandwiches and crisps.',
+        highlightedText: ['cheese sandwiches', 'cheese, sandwiches'],
+    },
+    {
+        id: 'commas-learn-clarity-address',
+        type: ClauseType.COMMAS,
+        title: 'Showing Who Is Being Spoken To',
+        definition: 'Use a comma to separate the name of the person you are speaking to from the rest of the sentence.',
+        mascotDialogue: 'The first question asks whether someone is watching Imani. The second question is asked directly to Imani.',
+        exampleSentence: 'Are you watching Imani?\nAre you watching, Imani?',
+        highlightedText: ['watching Imani', 'watching, Imani'],
+    },
+    {
+        id: 'commas-learn-clarity-extra',
+        type: ClauseType.COMMAS,
+        title: 'Using a Pair of Commas for Extra Information',
+        definition: 'Put a pair of commas around extra information in the middle of a sentence. With these commas, the detail applies to the whole group. Without them, the detail can identify a particular part of the group.',
+        mascotDialogue: 'The first line tells us about the trays with lids. The second line tells us that all the trays had lids and all were stacked.',
+        exampleSentence: 'The trays which had lids were stacked.\nThe trays, which had lids, were stacked.',
+        highlightedText: ['which had lids', ', which had lids,'],
+    },
+];

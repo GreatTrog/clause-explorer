@@ -44,7 +44,7 @@ export const TableClassifier: React.FC<TableClassifierProps> = ({ question, onCo
                 <table>
                     <thead>
                         <tr>
-                            <th>Clause</th>
+                            <th>{question.rowHeader ?? 'Clause'}</th>
                             {question.columns.map(col => (
                                 <th key={col}>{getClauseDisplayName(col as any)}</th>
                             ))}
@@ -87,7 +87,7 @@ export const TableClassifier: React.FC<TableClassifierProps> = ({ question, onCo
           background: white;
           border-radius: var(--radius-lg);
           box-shadow: var(--shadow-md);
-          overflow: hidden;
+          overflow-x: auto;
           width: 100%;
         }
 
@@ -159,6 +159,13 @@ export const TableClassifier: React.FC<TableClassifierProps> = ({ question, onCo
 
         .submit-btn {
            min-width: 200px;
+        }
+
+        @media (max-width: 600px) {
+          .table-classifier th,
+          .table-classifier td {
+            padding: 0.5rem;
+          }
         }
       `}</style>
         </div>

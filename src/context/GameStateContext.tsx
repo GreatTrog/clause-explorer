@@ -27,6 +27,7 @@ const INITIAL_PROGRESS: UserProgress = {
         [ClauseType.APOSTROPHE_OMISSION]: 0,
         [ClauseType.APOSTROPHE_POSSESSION]: 0,
         [ClauseType.CLAUSE_BOUNDARIES]: 0,
+        [ClauseType.COMMAS]: 0,
     },
     tenseScores: {
         [TenseType.SIMPLE_PAST]: 0,
@@ -56,6 +57,7 @@ const INITIAL_PROGRESS: UserProgress = {
         ['DIRECT_SPEECH']: 0,
         ['APOSTROPHE_OMISSION']: 0,
         ['APOSTROPHE_POSSESSION']: 0,
+        [ClauseType.COMMAS]: 0,
     },
     masteryScore: 0,
     streak: 0,
@@ -81,9 +83,7 @@ export const GameStateProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         if (!migrated.wordClassScores) {
             migrated.wordClassScores = INITIAL_PROGRESS.wordClassScores;
         }
-        if (!migrated.punctuationScores) {
-            migrated.punctuationScores = INITIAL_PROGRESS.punctuationScores;
-        }
+        migrated.punctuationScores = { ...INITIAL_PROGRESS.punctuationScores, ...migrated.punctuationScores };
 
         return migrated;
     });

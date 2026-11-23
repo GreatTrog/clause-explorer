@@ -98,6 +98,7 @@ export interface TableQuestion {
     id: string;
     instructions: string;
     question?: string;
+    rowHeader?: string;
     columns: GrammarCategory[];
     rows: TableRow[];
 }

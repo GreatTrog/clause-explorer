@@ -7,6 +7,7 @@ import { WORD_CLASSES_MASTERY_QUESTIONS } from '../../data/wordClassesMastery';
 import { PUNCTUATION_MASTERY_QUESTIONS } from '../../data/punctuationMastery';
 import { APOSTROPHE_OMISSION_MASTERY_QUESTIONS, APOSTROPHE_POSSESSION_MASTERY_QUESTIONS } from '../../data/apostropheMastery';
 import { CLAUSE_BOUNDARY_MASTERY_QUESTIONS } from '../../data/clauseBoundaryMastery';
+import { COMMA_MASTERY_QUESTIONS } from '../../data/commaMastery';
 import { DragDropZone } from './DragDropZone';
 import { SentenceCompleter } from './SentenceCompleter';
 import { TableClassifier } from './TableClassifier';
@@ -20,6 +21,44 @@ import { useGameState } from '../../context/GameStateContext';
 import { ModuleSelector } from '../../components/ModuleSelector';
 import { GrammarModule, ClauseType } from '../../types';
 
+const PUNCTUATION_TOPICS = [
+    {
+        type: ClauseType.DIRECT_SPEECH,
+        icon: '💬',
+        title: 'Direct Speech',
+        description: 'Master speech marks!',
+        questions: PUNCTUATION_MASTERY_QUESTIONS,
+    },
+    {
+        type: ClauseType.APOSTROPHE_OMISSION,
+        icon: '✂️',
+        title: 'Apostrophes: Omission',
+        description: 'Master contractions!',
+        questions: APOSTROPHE_OMISSION_MASTERY_QUESTIONS,
+    },
+    {
+        type: ClauseType.APOSTROPHE_POSSESSION,
+        icon: '🏠',
+        title: 'Apostrophes: Possession',
+        description: 'Master ownership!',
+        questions: APOSTROPHE_POSSESSION_MASTERY_QUESTIONS,
+    },
+    {
+        type: ClauseType.CLAUSE_BOUNDARIES,
+        icon: '⚖️',
+        title: 'Clause Boundaries',
+        description: 'Master semi-colons, colons & dashes!',
+        questions: CLAUSE_BOUNDARY_MASTERY_QUESTIONS,
+    },
+    {
+        type: ClauseType.COMMAS,
+        icon: '✍️',
+        title: 'Commas',
+        description: 'Lists, fronted adverbials and clear meanings',
+        questions: COMMA_MASTERY_QUESTIONS,
+    },
+];
+
 // Simple Fisher-Yates shuffle
 function shuffleArray<T>(array: T[]): T[] {
     const newArray = [...array];
@@ -32,7 +71,7 @@ function shuffleArray<T>(array: T[]): T[] {
 
 export const MasteryContainer: React.FC = () => {
     const [selectedModule, setSelectedModule] = useState<GrammarModule | null>(null);
-    const [selectedPunctuation, setSelectedPunctuation] = useState<string | null>(null);
+    const [selectedPunctuation, setSelectedPunctuation] = useState<ClauseType | null>(null);
     // Store shuffled questions in state so order persists during render
     const [questions, setQuestions] = useState<MasteryQuestion[]>([]);
     const [currentIndex, setCurrentIndex] = useState(0);
@@ -55,17 +94,8 @@ export const MasteryContainer: React.FC = () => {
             setQuestions(shuffleArray(WORD_CLASSES_MASTERY_QUESTIONS));
             setCurrentIndex(0);
         } else if (selectedModule === GrammarModule.PUNCTUATION && selectedPunctuation) {
-            let qSet: MasteryQuestion[] = [];
-            if (selectedPunctuation === ClauseType.DIRECT_SPEECH) {
-                qSet = PUNCTUATION_MASTERY_QUESTIONS;
-            } else if (selectedPunctuation === ClauseType.APOSTROPHE_OMISSION) {
-                qSet = APOSTROPHE_OMISSION_MASTERY_QUESTIONS;
-            } else if (selectedPunctuation === ClauseType.APOSTROPHE_POSSESSION) {
-                qSet = APOSTROPHE_POSSESSION_MASTERY_QUESTIONS;
-            } else if (selectedPunctuation === ClauseType.CLAUSE_BOUNDARIES) {
-                qSet = CLAUSE_BOUNDARY_MASTERY_QUESTIONS;
-            }
-            setQuestions(shuffleArray(qSet));
+            const topic = PUNCTUATION_TOPICS.find(({ type }) => type === selectedPunctuation);
+            setQuestions(shuffleArray(topic?.questions ?? []));
             setCurrentIndex(0);
         }
     }, [selectedModule, selectedPunctuation]);
@@ -89,97 +119,31 @@ export const MasteryContainer: React.FC = () => {
                     <h2 style={{ color: 'var(--color-accent)' }}>Choose Punctuation Mastery</h2>
                 </div>
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1.5rem' }}>
-                    <button
-                        className="cat-btn"
-                        onClick={() => setSelectedPunctuation(ClauseType.DIRECT_SPEECH)}
-                        style={{
-                            padding: '1rem',
-                            minHeight: '120px',
-                            borderRadius: 'var(--radius-lg)',
-                            border: '1px solid #e5e7eb',
-                            cursor: 'pointer',
-                            background: '#ffffff',
-                            display: 'flex',
-                            flexDirection: 'column',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            gap: '0.5rem',
-                            boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
-                        }}
-                    >
-                        <div style={{ fontSize: '2.5rem' }}>💬</div>
-                        <h3 style={{ margin: 0, color: 'var(--color-accent)' }}>Direct Speech</h3>
-                        <p style={{ margin: 0, color: '#6b7280' }}>Master speech marks!</p>
-                    </button>
-
-                    <button
-                        className="cat-btn"
-                        onClick={() => setSelectedPunctuation(ClauseType.APOSTROPHE_OMISSION)}
-                        style={{
-                            padding: '1rem',
-                            minHeight: '120px',
-                            borderRadius: 'var(--radius-lg)',
-                            border: '1px solid #e5e7eb',
-                            cursor: 'pointer',
-                            background: '#ffffff',
-                            display: 'flex',
-                            flexDirection: 'column',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            gap: '0.5rem',
-                            boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
-                        }}
-                    >
-                        <div style={{ fontSize: '2.5rem' }}>✂️</div>
-                        <h3 style={{ margin: 0, color: 'var(--color-accent)' }}>Apostrophes: Omission</h3>
-                        <p style={{ margin: 0, color: '#6b7280' }}>Master contractions!</p>
-                    </button>
-
-                    <button
-                        className="cat-btn"
-                        onClick={() => setSelectedPunctuation(ClauseType.APOSTROPHE_POSSESSION)}
-                        style={{
-                            padding: '1rem',
-                            minHeight: '120px',
-                            borderRadius: 'var(--radius-lg)',
-                            border: '1px solid #e5e7eb',
-                            cursor: 'pointer',
-                            background: '#ffffff',
-                            display: 'flex',
-                            flexDirection: 'column',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            gap: '0.5rem',
-                            boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
-                        }}
-                    >
-                        <div style={{ fontSize: '2.5rem' }}>🏠</div>
-                        <h3 style={{ margin: 0, color: 'var(--color-accent)' }}>Apostrophes: Possession</h3>
-                        <p style={{ margin: 0, color: '#6b7280' }}>Master ownership!</p>
-                    </button>
-
-                    <button
-                        className="cat-btn"
-                        onClick={() => setSelectedPunctuation(ClauseType.CLAUSE_BOUNDARIES)}
-                        style={{
-                            padding: '1rem',
-                            minHeight: '120px',
-                            borderRadius: 'var(--radius-lg)',
-                            border: '1px solid #e5e7eb',
-                            cursor: 'pointer',
-                            background: '#ffffff',
-                            display: 'flex',
-                            flexDirection: 'column',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            gap: '0.5rem',
-                            boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
-                        }}
-                    >
-                        <div style={{ fontSize: '2.5rem' }}>⚖️</div>
-                        <h3 style={{ margin: 0, color: 'var(--color-accent)' }}>Clause Boundaries</h3>
-                        <p style={{ margin: 0, color: '#6b7280' }}>Master semi-colons, colons & dashes!</p>
-                    </button>
+                    {PUNCTUATION_TOPICS.map(({ type, icon, title, description }) => (
+                        <button
+                            key={type}
+                            className="cat-btn"
+                            onClick={() => setSelectedPunctuation(type)}
+                            style={{
+                                padding: '1rem',
+                                minHeight: '120px',
+                                borderRadius: 'var(--radius-lg)',
+                                border: '1px solid #e5e7eb',
+                                cursor: 'pointer',
+                                background: '#ffffff',
+                                display: 'flex',
+                                flexDirection: 'column',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                gap: '0.5rem',
+                                boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
+                            }}
+                        >
+                            <div style={{ fontSize: '2.5rem' }}>{icon}</div>
+                            <h3 style={{ margin: 0, color: 'var(--color-accent)' }}>{title}</h3>
+                            <p style={{ margin: 0, color: '#6b7280' }}>{description}</p>
+                        </button>
+                    ))}
                 </div>
             </div>
         );
@@ -237,7 +201,10 @@ export const MasteryContainer: React.FC = () => {
                 <h2>Mastery Complete! 🏆</h2>
                 <div style={{ fontSize: '3rem', margin: '2rem' }}>🎉</div>
                 <p>You've mastered this set!</p>
-                <button className="btn-primary" onClick={() => setSelectedModule(null)}>Back to Modules</button>
+                <button className="btn-primary" onClick={() => {
+                    setSelectedPunctuation(null);
+                    setSelectedModule(null);
+                }}>Back to Modules</button>
             </div>
         );
     }

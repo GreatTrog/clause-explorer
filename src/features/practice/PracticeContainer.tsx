@@ -6,6 +6,7 @@ import { WORD_CLASSES_PRACTICE_QUESTIONS } from '../../data/wordClassesPractice'
 import { PUNCTUATION_PRACTICE_QUESTIONS } from '../../data/punctuationPractice';
 import { APOSTROPHE_PRACTICE_QUESTIONS } from '../../data/apostrophePractice';
 import { CLAUSE_BOUNDARY_PRACTICE_QUESTIONS } from '../../data/clauseBoundaryPractice';
+import { COMMA_PRACTICE_QUESTIONS } from '../../data/commaPractice';
 import type { Chunk } from '../../data/practiceQuestions';
 import { SentenceHighlighter } from './SentenceHighlighter';
 import { FeedbackOverlay } from './FeedbackOverlay';
@@ -66,7 +67,8 @@ export const PracticeContainer: React.FC = () => {
         const allPunctuationQuestions = [
             ...PUNCTUATION_PRACTICE_QUESTIONS,
             ...APOSTROPHE_PRACTICE_QUESTIONS,
-            ...CLAUSE_BOUNDARY_PRACTICE_QUESTIONS
+            ...CLAUSE_BOUNDARY_PRACTICE_QUESTIONS,
+            ...COMMA_PRACTICE_QUESTIONS
         ];
         questions = allPunctuationQuestions.filter(q => q.type === selectedPunctuation);
     }
@@ -504,6 +506,9 @@ export const PracticeContainer: React.FC = () => {
                     </button>
                     <button className="cat-btn main" onClick={() => setSelectedPunctuation(ClauseType.CLAUSE_BOUNDARIES)}>
                         <div className="icon">⚖️</div><h3>Clause Boundaries</h3><p>Semi-colons, colons & dashes</p>
+                    </button>
+                    <button className="cat-btn main" onClick={() => setSelectedPunctuation(ClauseType.COMMAS)}>
+                        <div className="icon">✍️</div><h3>Commas</h3><p>Lists, fronted adverbials and clear meanings</p>
                     </button>
                 </div>
                 <style>{PRACTICE_STYLES}</style>

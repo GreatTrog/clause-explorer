@@ -6,6 +6,7 @@ import { WORD_CLASSES_CURRICULUM } from '../../data/wordClassesCurriculum';
 import { PUNCTUATION_CURRICULUM } from '../../data/punctuationCurriculum';
 import { APOSTROPHE_OMISSION_CURRICULUM, APOSTROPHE_POSSESSION_CURRICULUM } from '../../data/apostropheCurriculum';
 import { CLAUSE_BOUNDARY_CURRICULUM } from '../../data/clauseBoundaryCurriculum';
+import { COMMA_CURRICULUM } from '../../data/commaCurriculum';
 import { LearnCard } from './LearnCard';
 import { useGameState } from '../../context/GameStateContext';
 import { ModuleSelector } from '../../components/ModuleSelector';
@@ -171,6 +172,11 @@ export const LearnContainer: React.FC<LearnContainerProps> = ({ onComplete }) =>
             <h3>Clause Boundaries</h3>
             <p>Semi-colons, colons & dashes</p>
           </button>
+          <button className="cat-btn word-class" onClick={() => setSelectedPunctuation(ClauseType.COMMAS)}>
+            <div className="icon">✍️</div>
+            <h3>Commas</h3>
+            <p>Lists, fronted adverbials and clear meanings</p>
+          </button>
         </div>
         <style>{MENU_STYLES}</style>
         <style>{`
@@ -204,7 +210,8 @@ export const LearnContainer: React.FC<LearnContainerProps> = ({ onComplete }) =>
       ...PUNCTUATION_CURRICULUM,
       ...APOSTROPHE_OMISSION_CURRICULUM,
       ...APOSTROPHE_POSSESSION_CURRICULUM,
-      ...CLAUSE_BOUNDARY_CURRICULUM
+      ...CLAUSE_BOUNDARY_CURRICULUM,
+      ...COMMA_CURRICULUM
     ];
     if (selectedPunctuation) {
       content = allPunctuation.filter(page => page.type === selectedPunctuation);
