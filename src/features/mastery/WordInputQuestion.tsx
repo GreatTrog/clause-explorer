@@ -11,6 +11,9 @@ export const WordInputQuestion: React.FC<WordInputQuestionProps> = ({ question, 
     const [input, setInput] = useState('');
     const [status, setStatus] = useState<'IDLE' | 'CORRECT' | 'INCORRECT'>('IDLE');
     const inputRef = useRef<HTMLInputElement>(null);
+    const feedbackTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+
+    useEffect(() => () => clearTimeout(feedbackTimer.current), []);
 
     useEffect(() => {
         // Reset state when question changes or if explicitly reset via isAnswered being false after being true
@@ -25,15 +28,15 @@ export const WordInputQuestion: React.FC<WordInputQuestionProps> = ({ question, 
         if (e) e.preventDefault();
         if (status !== 'IDLE') return;
 
-        const cleanInput = input.trim();
+        const cleanInput = question.fullSentence ? input.trim().replace(/\s+/g, ' ') : input.trim();
         const cleanAnswer = question.correctAnswer.trim();
 
         if (cleanInput === cleanAnswer) {
             setStatus('CORRECT');
-            setTimeout(() => onComplete(true), 1500);
+            feedbackTimer.current = setTimeout(() => onComplete(true), 1500);
         } else {
             setStatus('INCORRECT');
-            setTimeout(() => onComplete(false), 2000); // Give time to see the error state
+            feedbackTimer.current = setTimeout(() => onComplete(false), 2000); // Give time to see the error state
         }
     };
 
@@ -41,7 +44,7 @@ export const WordInputQuestion: React.FC<WordInputQuestionProps> = ({ question, 
         <div className="word-input-game">
             <div className="sentence-container">
                 <span className="sentence-part">{question.sentenceBefore}</span>
-                <form onSubmit={handleSubmit} className="input-form">
+                <form onSubmit={handleSubmit} className={question.fullSentence ? 'input-form full-sentence' : 'input-form'}>
                     <input
                         ref={inputRef}
                         type="text"
@@ -49,9 +52,10 @@ export const WordInputQuestion: React.FC<WordInputQuestionProps> = ({ question, 
                         onChange={(e) => setInput(e.target.value)}
                         className={`word-input ${status.toLowerCase()}`}
                         placeholder={question.promptLabel || "type here..."}
+                        aria-label={question.promptLabel ?? 'Answer'}
                         disabled={status !== 'IDLE'}
                         autoCorrect="off"
-                        autoCapitalize="off"
+                        autoCapitalize={question.fullSentence ? 'sentences' : 'off'}
                         spellCheck="false"
                     />
                 </form>
@@ -126,6 +130,11 @@ export const WordInputQuestion: React.FC<WordInputQuestionProps> = ({ question, 
                 .word-input:focus {
                     border-color: var(--color-primary);
                     box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+                }
+
+                .full-sentence,
+                .full-sentence .word-input {
+                    width: 100%;
                 }
 
                 .word-input.correct {

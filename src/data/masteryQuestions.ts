@@ -9,6 +9,7 @@ export const MasteryQuestionType = {
     PUNCTUATION_EDIT: 'PUNCTUATION_EDIT',
     CONTRACTION_EDIT: 'CONTRACTION_EDIT',
     MULTI_SELECT: 'MULTI_SELECT',
+    WRITTEN_RESPONSE: 'WRITTEN_RESPONSE',
 } as const;
 
 export type MasteryQuestionType = typeof MasteryQuestionType[keyof typeof MasteryQuestionType];
@@ -67,6 +68,16 @@ export interface TextInputQuestion {
     sentenceAfter: string;
     correctAnswer: string;
     promptLabel?: string; // e.g. "(to run)"
+    fullSentence?: boolean;
+}
+
+export interface WrittenResponseQuestion {
+    type: typeof MasteryQuestionType.WRITTEN_RESPONSE;
+    id: string;
+    instructions: string;
+    question?: string;
+    modelAnswer: string;
+    checklist: string[];
 }
 
 export interface PunctuationEditQuestion {
@@ -103,7 +114,10 @@ export interface TableQuestion {
     rows: TableRow[];
 }
 
-export type MasteryQuestion = SelectQuestion | DragDropQuestion | CompleteQuestion | TableQuestion | TextInputQuestion | PunctuationEditQuestion | ContractionEditQuestion | MultiSelectQuestion;
+export type MasteryQuestion = (
+    SelectQuestion | DragDropQuestion | CompleteQuestion | TableQuestion | TextInputQuestion |
+    PunctuationEditQuestion | ContractionEditQuestion | MultiSelectQuestion | WrittenResponseQuestion
+) & { explanation?: string };
 
 export const MASTERY_QUESTIONS: MasteryQuestion[] = [
     // --- DRAG AND DROP (Sorting) ---

@@ -7,6 +7,7 @@ import { PUNCTUATION_CURRICULUM } from '../../data/punctuationCurriculum';
 import { APOSTROPHE_OMISSION_CURRICULUM, APOSTROPHE_POSSESSION_CURRICULUM } from '../../data/apostropheCurriculum';
 import { CLAUSE_BOUNDARY_CURRICULUM } from '../../data/clauseBoundaryCurriculum';
 import { COMMA_CURRICULUM } from '../../data/commaCurriculum';
+import { SENTENCE_FUNCTIONS_CURRICULUM } from '../../data/sentenceFunctionsCurriculum';
 import { LearnCard } from './LearnCard';
 import { useGameState } from '../../context/GameStateContext';
 import { ModuleSelector } from '../../components/ModuleSelector';
@@ -198,6 +199,8 @@ export const LearnContainer: React.FC<LearnContainerProps> = ({ onComplete }) =>
     content = TENSES_CONTENT;
   } else if (selectedModule === GrammarModule.VOICE) {
     content = VOICE_CURRICULUM;
+  } else if (selectedModule === GrammarModule.SENTENCE_FUNCTIONS) {
+    content = SENTENCE_FUNCTIONS_CURRICULUM;
   } else if (selectedModule === GrammarModule.WORD_CLASSES) {
     // If we have a specific class selected, filter only those pages
     if (selectedWordClass) {

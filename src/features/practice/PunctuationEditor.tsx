@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useId, useRef } from 'react';
 
 interface PunctuationEditorProps {
     originalText: string;
@@ -11,6 +11,7 @@ export const PunctuationEditor: React.FC<PunctuationEditorProps> = ({ originalTe
     const [userInput, setUserInput] = useState(originalText);
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
+    const editorId = useId();
     const textareaRef = useRef<HTMLTextAreaElement>(null);
 
     useEffect(() => {
@@ -70,12 +71,14 @@ export const PunctuationEditor: React.FC<PunctuationEditorProps> = ({ originalTe
     return (
         <div className="punctuation-editor">
             <div className="editor-card">
-                <p className="instruction-mini">Edit the sentence below to use correct punctuation:</p>
+                <label className="instruction-mini" htmlFor={editorId}>Edit the text below to use correct punctuation.</label>
                 <textarea
+                    id={editorId}
                     ref={textareaRef}
                     value={userInput}
                     onChange={(e) => setUserInput(e.target.value)}
                     disabled={isSubmitted}
+                    rows={Math.max(2, originalText.split('\n').length)}
                     className={`editor-input ${isCorrect === true ? 'correct' : isCorrect === false ? 'incorrect' : ''}`}
                     spellCheck={false}
                 />

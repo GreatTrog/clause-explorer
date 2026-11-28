@@ -13,6 +13,7 @@ export const GrammarModule = {
     VOICE: 'VOICE',
     WORD_CLASSES: 'WORD_CLASSES',
     PUNCTUATION: 'PUNCTUATION',
+    SENTENCE_FUNCTIONS: 'SENTENCE_FUNCTIONS',
 } as const;
 
 export type GrammarModule = typeof GrammarModule[keyof typeof GrammarModule];
@@ -65,6 +66,15 @@ export const WordClassType = {
 
 export type WordClassType = typeof WordClassType[keyof typeof WordClassType];
 
+export const SentenceFunction = {
+    STATEMENT: 'Statement',
+    QUESTION: 'Question',
+    COMMAND: 'Command',
+    EXCLAMATION: 'Exclamation',
+} as const;
+
+export type SentenceFunction = typeof SentenceFunction[keyof typeof SentenceFunction];
+
 export interface UserProgress {
     learnCompleted: boolean;
     practiceScores: Record<ClauseType, number>;
@@ -72,11 +82,12 @@ export interface UserProgress {
     voiceScores: Record<VoiceType, number>;
     wordClassScores: Record<WordClassType, number>;
     punctuationScores: Record<string, number>;
+    sentenceFunctionsScore: number;
     masteryScore: number;
     streak: number;
 }
 
-export const getClauseDisplayName = (type: ClauseType | TenseType | VoiceType | WordClassType): string => {
+export const getClauseDisplayName = (type: string): string => {
     switch (type) {
         // Clauses
         case ClauseType.MAIN: return 'Main Clause';
@@ -116,6 +127,6 @@ export const getClauseDisplayName = (type: ClauseType | TenseType | VoiceType | 
         case 'CLAUSE_BOUNDARIES': return 'Semicolons, Colons and Dashes';
         case 'COMMAS': return 'Commas';
 
-        default: return (type as string).replace(/_/g, ' ');
+        default: return type.replace(/_/g, ' ');
     }
 };

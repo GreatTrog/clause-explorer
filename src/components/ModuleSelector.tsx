@@ -54,6 +54,15 @@ export const ModuleSelector: React.FC<ModuleSelectorProps> = ({ onSelect }) => {
                     <h3>Punctuation</h3>
                     <p>Speech marks, commas & more!</p>
                 </button>
+
+                <button
+                    className="module-card sentence-functions"
+                    onClick={() => onSelect(GrammarModule.SENTENCE_FUNCTIONS)}
+                >
+                    <div className="icon" aria-hidden="true">❓</div>
+                    <h3>Functions of Sentences</h3>
+                    <p>Statements, questions, commands and exclamations</p>
+                </button>
             </div>
 
             <style>{`
@@ -114,6 +123,7 @@ export const ModuleSelector: React.FC<ModuleSelectorProps> = ({ onSelect }) => {
                 .module-card.voice:hover { border-bottom: 4px solid #EC4899; }
                 .module-card.words:hover { border-bottom: 4px solid #8B5CF6; }
                 .module-card.punctuation:hover { border-bottom: 4px solid #F59E0B; }
+                .module-card.sentence-functions:hover { border-bottom: 4px solid #0D9488; }
             `}</style>
         </div>
     );

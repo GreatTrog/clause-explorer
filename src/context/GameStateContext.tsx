@@ -9,6 +9,7 @@ interface GameStateContextType {
     updateVoiceScore: (type: VoiceType, score: number) => void;
     updateWordClassScore: (type: WordClassType, score: number) => void;
     updatePunctuationScore: (type: string, score: number) => void;
+    updateSentenceFunctionsScore: (score: number) => void;
     updateMasteryScore: (score: number) => void;
     incrementStreak: () => void;
     resetStreak: () => void;
@@ -60,6 +61,7 @@ const INITIAL_PROGRESS: UserProgress = {
         [ClauseType.COMMAS]: 0,
     },
     masteryScore: 0,
+    sentenceFunctionsScore: 0,
     streak: 0,
 };
 
@@ -71,7 +73,7 @@ export const GameStateProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         // Handle migration if needed by merging with INITIAL_PROGRESS
         const parsed = saved ? JSON.parse(saved) : INITIAL_PROGRESS;
 
-        let migrated = { ...parsed };
+        const migrated = { ...parsed };
 
         // Migration checks
         if (!migrated.tenseScores) {
@@ -84,6 +86,7 @@ export const GameStateProvider: React.FC<{ children: React.ReactNode }> = ({ chi
             migrated.wordClassScores = INITIAL_PROGRESS.wordClassScores;
         }
         migrated.punctuationScores = { ...INITIAL_PROGRESS.punctuationScores, ...migrated.punctuationScores };
+        migrated.sentenceFunctionsScore ??= INITIAL_PROGRESS.sentenceFunctionsScore;
 
         return migrated;
     });
@@ -149,6 +152,13 @@ export const GameStateProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         }));
     };
 
+    const updateSentenceFunctionsScore = (score: number) => {
+        setProgress(prev => ({
+            ...prev,
+            sentenceFunctionsScore: Math.max(prev.sentenceFunctionsScore, score)
+        }));
+    };
+
     const incrementStreak = () => {
         setProgress(prev => ({ ...prev, streak: prev.streak + 1 }));
     };
@@ -169,6 +179,7 @@ export const GameStateProvider: React.FC<{ children: React.ReactNode }> = ({ chi
             updateVoiceScore,
             updateWordClassScore,
             updatePunctuationScore,
+            updateSentenceFunctionsScore,
             updateMasteryScore,
             incrementStreak,
             resetStreak,

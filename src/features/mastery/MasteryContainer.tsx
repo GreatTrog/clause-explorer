@@ -8,10 +8,12 @@ import { PUNCTUATION_MASTERY_QUESTIONS } from '../../data/punctuationMastery';
 import { APOSTROPHE_OMISSION_MASTERY_QUESTIONS, APOSTROPHE_POSSESSION_MASTERY_QUESTIONS } from '../../data/apostropheMastery';
 import { CLAUSE_BOUNDARY_MASTERY_QUESTIONS } from '../../data/clauseBoundaryMastery';
 import { COMMA_MASTERY_QUESTIONS } from '../../data/commaMastery';
+import { SENTENCE_FUNCTIONS_MASTERY_QUESTIONS } from '../../data/sentenceFunctionsMastery';
 import { DragDropZone } from './DragDropZone';
 import { SentenceCompleter } from './SentenceCompleter';
 import { TableClassifier } from './TableClassifier';
 import { WordInputQuestion } from './WordInputQuestion';
+import { WrittenResponse } from './WrittenResponse';
 import { MultiSelectSentence } from './MultiSelectSentence';
 import { PunctuationEditor } from '../practice/PunctuationEditor';
 import { ContractionEditor } from '../practice/ContractionEditor';
@@ -93,6 +95,9 @@ export const MasteryContainer: React.FC = () => {
         } else if (selectedModule === GrammarModule.WORD_CLASSES) {
             setQuestions(shuffleArray(WORD_CLASSES_MASTERY_QUESTIONS));
             setCurrentIndex(0);
+        } else if (selectedModule === GrammarModule.SENTENCE_FUNCTIONS) {
+            setQuestions(shuffleArray(SENTENCE_FUNCTIONS_MASTERY_QUESTIONS));
+            setCurrentIndex(0);
         } else if (selectedModule === GrammarModule.PUNCTUATION && selectedPunctuation) {
             const topic = PUNCTUATION_TOPICS.find(({ type }) => type === selectedPunctuation);
             setQuestions(shuffleArray(topic?.questions ?? []));
@@ -162,10 +167,10 @@ export const MasteryContainer: React.FC = () => {
         if (isSuccess) {
             incrementStreak();
             updateMasteryScore(20); // Higher points for mastery
-            setFeedback({ isCorrect: true, message: "Masterful!" });
+            setFeedback({ isCorrect: true, message: currentQuestion?.explanation ?? "Masterful!" });
         } else {
             resetStreak();
-            let message = "Oops! Keep practicing.";
+            let message = currentQuestion?.explanation ?? "Oops! Keep practicing.";
             if (currentQuestion && currentQuestion.type === MasteryQuestionType.TEXT_INPUT) {
                 message = `Not quite right. The correct version is:\n\n${currentQuestion.correctAnswer}`;
             } else if (currentQuestion && currentQuestion.type === MasteryQuestionType.PUNCTUATION_EDIT) {
@@ -283,6 +288,10 @@ export const MasteryContainer: React.FC = () => {
                         onComplete={handleQuestionComplete}
                         isAnswered={!!feedback}
                     />
+                )}
+
+                {currentQuestion.type === MasteryQuestionType.WRITTEN_RESPONSE && (
+                    <WrittenResponse question={currentQuestion} onNext={handleNext} />
                 )}
 
                 {currentQuestion.type === MasteryQuestionType.PUNCTUATION_EDIT && (

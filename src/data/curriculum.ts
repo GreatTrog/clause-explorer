@@ -1,8 +1,9 @@
 import { ClauseType, TenseType, VoiceType, WordClassType } from '../types';
+import type { SentenceFunction } from '../types';
 
 export interface LearnPage {
     id: string;
-    type: ClauseType | TenseType | VoiceType | WordClassType;
+    type: ClauseType | TenseType | VoiceType | WordClassType | SentenceFunction;
     title: string;
     definition: string;
     mascotDialogue: string;

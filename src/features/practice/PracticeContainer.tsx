@@ -7,6 +7,7 @@ import { PUNCTUATION_PRACTICE_QUESTIONS } from '../../data/punctuationPractice';
 import { APOSTROPHE_PRACTICE_QUESTIONS } from '../../data/apostrophePractice';
 import { CLAUSE_BOUNDARY_PRACTICE_QUESTIONS } from '../../data/clauseBoundaryPractice';
 import { COMMA_PRACTICE_QUESTIONS } from '../../data/commaPractice';
+import { SENTENCE_FUNCTIONS_PRACTICE_QUESTIONS } from '../../data/sentenceFunctionsPractice';
 import type { Chunk } from '../../data/practiceQuestions';
 import { SentenceHighlighter } from './SentenceHighlighter';
 import { FeedbackOverlay } from './FeedbackOverlay';
@@ -49,11 +50,13 @@ export const PracticeContainer: React.FC = () => {
         updateVoiceScore,
         updateWordClassScore,
         updatePunctuationScore,
+        updateSentenceFunctionsScore,
         incrementStreak,
         resetStreak
     } = useGameState();
 
     // 2. Derived Questions (Source Data)
+    const isSentenceFunctions = selectedModule === GrammarModule.SENTENCE_FUNCTIONS;
     let questions: any[] = [];
     if (selectedModule === GrammarModule.CLAUSES && selectedCategory) {
         questions = PRACTICE_QUESTIONS.filter(q => q.type === selectedCategory);
@@ -63,6 +66,8 @@ export const PracticeContainer: React.FC = () => {
         questions = VOICE_PRACTICE_QUESTIONS.filter(q => q.type === selectedVoice);
     } else if (selectedModule === GrammarModule.WORD_CLASSES && selectedWordClass) {
         questions = WORD_CLASSES_PRACTICE_QUESTIONS.filter(q => q.type === selectedWordClass);
+    } else if (isSentenceFunctions) {
+        questions = SENTENCE_FUNCTIONS_PRACTICE_QUESTIONS;
     } else if (selectedModule === GrammarModule.PUNCTUATION && selectedPunctuation) {
         const allPunctuationQuestions = [
             ...PUNCTUATION_PRACTICE_QUESTIONS,
@@ -124,6 +129,8 @@ export const PracticeContainer: React.FC = () => {
         setShuffledQuestions([]);
     };
 
+    const handleLeaveTopic = isSentenceFunctions ? handleBackToModules : resetSelection;
+
     const handleSelectChunk = (chunk: Chunk) => {
         setSelectedChunk(chunk);
         setIsAnswered(true);
@@ -152,7 +159,8 @@ export const PracticeContainer: React.FC = () => {
             if (selectedVoice) updateVoiceScore(selectedVoice, 10);
             if (selectedWordClass) updateWordClassScore(selectedWordClass, 10);
             if (selectedPunctuation) updatePunctuationScore(selectedPunctuation, 10);
-            setFeedback({ isCorrect: true, message: "Correct!" });
+            if (isSentenceFunctions) updateSentenceFunctionsScore(10);
+            setFeedback({ isCorrect: true, message: isSentenceFunctions ? currentQuestion.explanation : "Correct!" });
         } else {
             resetStreak();
             setFeedback({ isCorrect: false, message: currentQuestion.hint || "Not quite right. Try again!" });
@@ -335,7 +343,7 @@ export const PracticeContainer: React.FC = () => {
             <div className="container">
                 <h2>Practice Complete! 🎉</h2>
                 <p>You've completed this set.</p>
-                <button className="btn-primary" onClick={resetSelection}>Choose Another Topic</button>
+                <button className="btn-primary" onClick={handleLeaveTopic}>Choose Another Topic</button>
                 <style>{PRACTICE_STYLES}</style>
             </div>
         );
@@ -519,19 +527,23 @@ export const PracticeContainer: React.FC = () => {
     // Final safety check
     if (!currentQuestion) return null;
 
+    const showTaskAboveChoices = isSentenceFunctions && isMC;
+
     // 8. Main Render (Game Area)
     return (
         <div className="practice-container">
             <div className="header-info">
-                <button className="back-link" onClick={resetSelection}>← Menu</button>
+                <button className="back-link" onClick={handleLeaveTopic}>← {isSentenceFunctions ? 'modules' : 'Menu'}</button>
                 <span className="question-counter">Question {currentIndex + 1} / {shuffledQuestions.length}</span>
                 <span className="streak-badge">🔥 Streak</span>
             </div>
 
-            <div className="instruction-card">
-                <h2>{currentQuestion.instructions || (isMC ? "Choose the correct option" : (currentQuestion.text || currentQuestion.question || "Find the answer"))}</h2>
-                <div className="mascot-helper">🦉</div>
-            </div>
+            {!showTaskAboveChoices && (
+                <div className="instruction-card">
+                    <h2>{currentQuestion.instructions || (isMC ? "Choose the correct option" : (currentQuestion.text || currentQuestion.question || "Find the answer"))}</h2>
+                    <div className="mascot-helper">🦉</div>
+                </div>
+            )}
 
             {isHighlight && (
                 <SentenceHighlighter
@@ -546,7 +558,8 @@ export const PracticeContainer: React.FC = () => {
             {isMC && (
                 <MultipleChoiceQuestion
                     key={currentIndex}
-                    question={currentQuestion.question || currentQuestion.text || ""}
+                    question={showTaskAboveChoices ? currentQuestion.instructions : (currentQuestion.question || currentQuestion.text || "")}
+                    supportingText={showTaskAboveChoices ? currentQuestion.question : undefined}
                     options={currentQuestion.options!}
                     selectedOptionId={selectedOptionId}
                     isAnswered={isAnswered}

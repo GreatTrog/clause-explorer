@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import type { TableQuestion, GrammarCategory } from '../../data/masteryQuestions';
 import { getClauseDisplayName } from '../../types';
 
@@ -11,6 +11,9 @@ export const TableClassifier: React.FC<TableClassifierProps> = ({ question, onCo
     // Store user selections: { [rowId]: selectedColumnType }
     const [selections, setSelections] = useState<Record<string, GrammarCategory>>({});
     const [submitted, setSubmitted] = useState(false);
+    const feedbackTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+
+    useEffect(() => () => clearTimeout(feedbackTimer.current), []);
 
     const handleCheck = (rowId: string, type: GrammarCategory) => {
         if (submitted) return;
@@ -33,7 +36,7 @@ export const TableClassifier: React.FC<TableClassifierProps> = ({ question, onCo
         // Check correctness
         const allCorrect = question.rows.every(row => selections[row.id] === row.correctType);
 
-        setTimeout(() => {
+        feedbackTimer.current = setTimeout(() => {
             onComplete(allCorrect);
         }, 1500); // Short delay to see results
     };
@@ -46,7 +49,7 @@ export const TableClassifier: React.FC<TableClassifierProps> = ({ question, onCo
                         <tr>
                             <th>{question.rowHeader ?? 'Clause'}</th>
                             {question.columns.map(col => (
-                                <th key={col}>{getClauseDisplayName(col as any)}</th>
+                                <th key={col}>{getClauseDisplayName(col)}</th>
                             ))}
                         </tr>
                     </thead>
@@ -59,7 +62,9 @@ export const TableClassifier: React.FC<TableClassifierProps> = ({ question, onCo
                                         <button
                                             className={`check-box ${selections[row.id] === col ? 'checked' : ''}`}
                                             onClick={() => handleCheck(row.id, col)}
-                                            aria-label={`Select ${col} for ${row.text}`}
+                                            aria-label={`Select ${getClauseDisplayName(col)} for ${row.text}`}
+                                            aria-pressed={selections[row.id] === col}
+                                            disabled={submitted}
                                         >
                                             {selections[row.id] === col && '✓'}
                                         </button>

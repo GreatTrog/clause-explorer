@@ -21,7 +21,7 @@ export const ModeSelection: React.FC<ModeSelectionProps> = ({ onSelectMode }) =>
           onClick={() => onSelectMode(AppMode.LEARN)}
         >
           <h2>🎓 Learn</h2>
-          <p>Explore clauses, conjunctions, verb tenses, active and passive voice, word classes and punctuation with clear examples.</p>
+          <p>Explore clauses, tenses, voice, word classes, punctuation and sentence functions with clear examples.</p>
         </button>
 
         <button
@@ -29,7 +29,7 @@ export const ModeSelection: React.FC<ModeSelectionProps> = ({ onSelectMode }) =>
           onClick={() => onSelectMode(AppMode.PRACTICE)}
         >
           <h2>🎯 Practice</h2>
-          <p>Test your skills on specific clause types.</p>
+          <p>Choose a grammar topic and get feedback as you answer.</p>
         </button>
 
         <button

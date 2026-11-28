@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useId } from 'react';
 
 export interface MultipleChoiceOption {
     id: string;
@@ -8,6 +8,7 @@ export interface MultipleChoiceOption {
 
 interface MultipleChoiceQuestionProps {
     question: string;
+    supportingText?: string;
     options: MultipleChoiceOption[];
     selectedOptionId: string | null;
     isAnswered: boolean;
@@ -16,16 +17,28 @@ interface MultipleChoiceQuestionProps {
 
 export const MultipleChoiceQuestion: React.FC<MultipleChoiceQuestionProps> = ({
     question,
+    supportingText,
     options,
     selectedOptionId,
     isAnswered,
     onSelect
 }) => {
+    const questionId = useId();
+    const supportingTextId = useId();
+
     return (
         <div className="mc-question-container">
-            <h2 className="question-text">{question}</h2>
+            <header className="question-header">
+                <h2 className="question-text" id={questionId}>{question}</h2>
+                {supportingText && <p className="question-context" id={supportingTextId}>{supportingText}</p>}
+            </header>
 
-            <div className="options-list">
+            <div
+                className="options-list"
+                role="group"
+                aria-labelledby={questionId}
+                aria-describedby={supportingText ? supportingTextId : undefined}
+            >
                 {options.map(option => {
                     let className = "option-btn";
                     if (isAnswered) {
@@ -67,10 +80,19 @@ export const MultipleChoiceQuestion: React.FC<MultipleChoiceQuestionProps> = ({
                     margin: 0 auto;
                 }
 
-                .question-text {
-                    color: var(--color-primary);
+                .question-header {
                     margin-bottom: 2rem;
                     text-align: center;
+                }
+
+                .question-text {
+                    color: var(--color-primary);
+                }
+
+                .question-context {
+                    color: var(--color-text-main);
+                    font-size: 1.125rem;
+                    margin-top: 0.5rem;
                 }
 
                 .options-list {
